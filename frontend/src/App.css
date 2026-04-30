@@ -6,29 +6,36 @@
   background: #101820;
   color: #f5f5f5;
   font-family: Arial, sans-serif;
+  padding: 32px;
 }
 
 .card {
   width: 100%;
-  max-width: 420px;
+  max-width: 900px;
   padding: 32px;
   border-radius: 16px;
   background: #1f2933;
 }
 
-h1 {
-  margin-bottom: 8px;
+h1,
+p {
+  text-align: center;
 }
 
-p {
-  color: #cbd5e1;
+.forms {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-top: 24px;
 }
 
 form {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  margin-top: 24px;
+  padding: 24px;
+  border-radius: 12px;
+  background: #263442;
 }
 
 label {
@@ -56,6 +63,11 @@ button {
 }
 
 .message {
-  margin-top: 16px;
   font-weight: bold;
+}
+
+@media (max-width: 800px) {
+  .forms {
+    grid-template-columns: 1fr;
+  }
 }
