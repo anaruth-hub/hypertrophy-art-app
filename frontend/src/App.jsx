@@ -15,6 +15,12 @@ function App() {
 
   const [userMessage, setUserMessage] = useState("");
   const [trainerMessage, setTrainerMessage] = useState("");
+  const [assignmentForm, setAssignmentForm] = useState({
+    userId: "",
+    trainerId: "",
+  });
+
+  const [assignmentMessage, setAssignmentMessage] = useState("");
 
   function handleUserChange(event) {
     const { name, value } = event.target;
@@ -26,6 +32,10 @@ function App() {
     setTrainerForm({ ...trainerForm, [name]: value });
   }
 
+  function handleAssignmentChange(event) {
+    const { name, value } = event.target;
+    setAssignmentForm({ ...assignmentForm, [name]: value });
+  }
   async function handleUserSubmit(event) {
     event.preventDefault();
     setUserMessage("Creating user...");
@@ -71,6 +81,39 @@ function App() {
       setTrainerMessage("Error creating trainer. Check backend or CORS.");
     }
   }
+
+    async function handleAssignmentSubmit(event) {
+      event.preventDefault();
+      setAssignmentMessage("Assigning trainer...");
+
+      try {
+        const response = await fetch(
+          `http://localhost:8080/api/users/${assignmentForm.userId}/assign-trainer/${assignmentForm.trainerId}`,
+          {
+            method: "POST",
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Could not assign trainer");
+        }
+
+        const assignment = await response.json();
+
+        setAssignmentMessage(
+          `Trainer assigned to user: ${assignment.userName}`
+        );
+
+        setAssignmentForm({
+          userId: "",
+          trainerId: "",
+        });
+      } catch (error) {
+        setAssignmentMessage(
+          "Error assigning trainer. Check IDs or user mode."
+        );
+      }
+    }
 
   return (
     <main className="page">
@@ -151,6 +194,36 @@ function App() {
             <button type="submit">Create trainer</button>
 
             {trainerMessage && <p className="message">{trainerMessage}</p>}
+          </form>
+
+          <form onSubmit={handleAssignmentSubmit}>
+            <h2>Assign trainer</h2>
+
+            <label>
+              User ID
+              <input
+                name="userId"
+                value={assignmentForm.userId}
+                onChange={handleAssignmentChange}
+                placeholder="Paste supervised user UUID"
+                required
+              />
+            </label>
+
+            <label>
+              Trainer ID
+              <input
+                name="trainerId"
+                value={assignmentForm.trainerId}
+                onChange={handleAssignmentChange}
+                placeholder="Paste trainer UUID"
+                required
+              />
+            </label>
+
+            <button type="submit">Assign trainer</button>
+
+            {assignmentMessage && <p className="message">{assignmentMessage}</p>}
           </form>
         </div>
       </section>
