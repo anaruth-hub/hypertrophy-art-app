@@ -2,9 +2,11 @@ package com.anaruth.hypertrophyartapp.infrastructure.persistence.memory;
 
 import com.anaruth.hypertrophyartapp.application.user.port.out.UserRepository;
 import com.anaruth.hypertrophyartapp.domain.user.model.User;
+import com.anaruth.hypertrophyartapp.domain.user.model.UserId;
 import org.springframework.stereotype.Repository;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -17,5 +19,10 @@ public class InMemoryUserRepository implements UserRepository {
     public User save(User user) {
         users.put(user.id().value(), user);
         return user;
+    }
+
+    @Override
+    public Optional<User> findById(UserId userId) {
+        return Optional.ofNullable(users.get(userId.value()));
     }
 }

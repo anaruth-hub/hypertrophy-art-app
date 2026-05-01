@@ -1,5 +1,7 @@
 package com.anaruth.hypertrophyartapp.domain.user.model;
 
+import com.anaruth.hypertrophyartapp.domain.trainer.model.TrainerId;
+
 import java.util.Objects;
 
 public class User {
@@ -8,6 +10,7 @@ public class User {
     private final String name;
     private final String email;
     private final UserMode mode;
+    private TrainerId trainerId;
 
     private User(UserId id, String name, String email, UserMode mode) {
         this.id = Objects.requireNonNull(id, "User id cannot be null");
@@ -36,6 +39,16 @@ public class User {
         return mode;
     }
 
+    public TrainerId trainerId() {
+        return trainerId;
+    }
+
+    public void assignTrainer(TrainerId trainerId) {
+        if (this.mode != UserMode.SUPERVISED) {
+            throw new IllegalStateException("Only supervised users can have a trainer");
+        }
+        this.trainerId = trainerId;
+    }
     private String validateName(String name) {
         if (name == null || name.isBlank()) {
             throw new IllegalArgumentException("User name cannot be blank");
