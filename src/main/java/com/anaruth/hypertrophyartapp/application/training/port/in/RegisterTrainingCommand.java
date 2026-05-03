@@ -1,4 +1,16 @@
 package com.anaruth.hypertrophyartapp.application.training.port.in;
 
-public class RegisterTrainingCommand {
+import com.anaruth.hypertrophyartapp.domain.training.model.TrainingIntensity;
+
+import java.time.LocalDate;
+import java.util.UUID;
+
+public record RegisterTrainingCommand(
+        UUID userId,
+        LocalDate date,
+        String muscleGroup,
+        String exercises,
+        TrainingIntensity intensity,
+        int durationMinutes
+) {
 }

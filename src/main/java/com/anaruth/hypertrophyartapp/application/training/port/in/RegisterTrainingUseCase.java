@@ -1,4 +1,6 @@
 package com.anaruth.hypertrophyartapp.application.training.port.in;
 
-public class RegisterTrainingUseCase {
+public interface RegisterTrainingUseCase {
+
+    RegisterTrainingResult registerTraining(RegisterTrainingCommand command);
 }
