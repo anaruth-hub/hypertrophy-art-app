@@ -1,4 +1,8 @@
 package com.anaruth.hypertrophyartapp.application.training.port.out;
 
-public class TrainingRepository {
+import com.anaruth.hypertrophyartapp.domain.training.model.Training;
+
+public interface TrainingRepository {
+
+    Training save(Training training);
 }

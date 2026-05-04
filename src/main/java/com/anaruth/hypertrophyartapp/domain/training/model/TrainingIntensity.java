@@ -1,4 +1,7 @@
 package com.anaruth.hypertrophyartapp.domain.training.model;
 
-public class TrainingIntensity {
+public enum TrainingIntensity {
+    LOW,
+    MEDIUM,
+    HIGH
 }
