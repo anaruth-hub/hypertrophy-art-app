@@ -23,6 +23,12 @@ public class User {
         return new User(UserId.newId(), name, email, mode);
     }
 
+    public static User restore(UserId id, String name, String email, UserMode mode, TrainerId trainerId) {
+        User user = new User(id, name, email, mode);
+        user.trainerId = trainerId;
+        return user;
+    }
+
     public UserId id() {
         return id;
     }
