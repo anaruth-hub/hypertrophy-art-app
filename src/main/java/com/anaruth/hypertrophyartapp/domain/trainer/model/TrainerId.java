@@ -12,7 +12,7 @@ public final class TrainerId {
     }
 
     public static TrainerId newId() {
-         return new TrainerId(UUID.randomUUID());
+        return new TrainerId(UUID.randomUUID());
     }
 
     public static TrainerId from(UUID value) {

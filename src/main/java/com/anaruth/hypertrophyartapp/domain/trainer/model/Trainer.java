@@ -18,6 +18,10 @@ public class Trainer {
         return new Trainer(TrainerId.newId(), name, email);
     }
 
+    public static Trainer restore(TrainerId id, String name, String email) {
+        return new Trainer(id, name, email);
+    }
+
     public TrainerId id() {
         return id;
     }
