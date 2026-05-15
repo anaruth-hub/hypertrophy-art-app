@@ -52,13 +52,53 @@ public class Training {
         );
     }
 
-    public TrainingId id() { return id; }
-    public UserId userId() { return userId; }
-    public LocalDate date() { return date; }
-    public String muscleGroup() { return muscleGroup; }
-    public String exercises() { return exercises; }
-    public TrainingIntensity intensity() { return intensity; }
-    public int durationMinutes() { return durationMinutes; }
+    public static Training restore(
+            TrainingId id,
+            UserId userId,
+            LocalDate date,
+            String muscleGroup,
+            String exercises,
+            TrainingIntensity intensity,
+            int durationMinutes
+    ) {
+        return new Training(
+                id,
+                userId,
+                date,
+                muscleGroup,
+                exercises,
+                intensity,
+                durationMinutes
+        );
+    }
+
+    public TrainingId id() {
+        return id;
+    }
+
+    public UserId userId() {
+        return userId;
+    }
+
+    public LocalDate date() {
+        return date;
+    }
+
+    public String muscleGroup() {
+        return muscleGroup;
+    }
+
+    public String exercises() {
+        return exercises;
+    }
+
+    public TrainingIntensity intensity() {
+        return intensity;
+    }
+
+    public int durationMinutes() {
+        return durationMinutes;
+    }
 
     private String validateText(String value, String field) {
         if (value == null || value.isBlank()) {

@@ -15,6 +15,10 @@ public final class TrainingId {
         return new TrainingId(UUID.randomUUID());
     }
 
+    public static TrainingId from(UUID value) {
+        return new TrainingId(value);
+    }
+
     public UUID value() {
         return value;
     }

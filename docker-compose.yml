@@ -1,0 +1,26 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: hypertrophy-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: hypertrophy_art
+      POSTGRES_USER: hypertrophy_user
+      POSTGRES_PASSWORD: hypertrophy_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - hypertrophy_postgres_data:/var/lib/postgresql/data
+
+  mongo:
+      image: mongo:7
+      container_name: hypertrophy-mongo
+      restart: unless-stopped
+      ports:
+        - "27018:27017"
+      volumes:
+        - hypertrophy_mongo_data:/data/db
+
+volumes:
+  hypertrophy_postgres_data:
+  hypertrophy_mongo_data:
