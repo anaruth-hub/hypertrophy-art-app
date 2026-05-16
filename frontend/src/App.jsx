@@ -2,22 +2,33 @@ import { useState } from "react";
 import "./App.css";
 
 function App() {
+
+  // USER
   const [userForm, setUserForm] = useState({
     name: "",
     email: "",
     mode: "SELF_MANAGED",
   });
 
+  const [userMessage, setUserMessage] = useState("");
+
+  // TRAINER
   const [trainerForm, setTrainerForm] = useState({
     name: "",
     email: "",
   });
 
+  const [trainerMessage, setTrainerMessage] = useState("");
+
+  // ASSIGNMENT
   const [assignmentForm, setAssignmentForm] = useState({
     userId: "",
     trainerId: "",
   });
 
+  const [assignmentMessage, setAssignmentMessage] = useState("");
+
+  // TRAINING
   const [trainingForm, setTrainingForm] = useState({
     userId: "",
     date: "",
@@ -27,10 +38,24 @@ function App() {
     durationMinutes: 60,
   });
 
-  const [userMessage, setUserMessage] = useState("");
-  const [trainerMessage, setTrainerMessage] = useState("");
-  const [assignmentMessage, setAssignmentMessage] = useState("");
   const [trainingMessage, setTrainingMessage] = useState("");
+
+  // RECOVERY
+  const [recoveryForm, setRecoveryForm] = useState({
+    userId: "",
+    date: "",
+    fatigueLevel: "MEDIUM",
+    sorenessLevel: "MEDIUM",
+    energyLevel: "MEDIUM",
+    sleepHours: 8,
+    notes: "",
+  });
+
+  const [recoveryMessage, setRecoveryMessage] = useState("");
+
+  // =========================
+  // HANDLERS
+  // =========================
 
   function handleUserChange(event) {
     const { name, value } = event.target;
@@ -52,217 +77,397 @@ function App() {
     setTrainingForm({ ...trainingForm, [name]: value });
   }
 
+  function handleRecoveryChange(event) {
+    const { name, value } = event.target;
+    setRecoveryForm({ ...recoveryForm, [name]: value });
+  }
+
+  // =========================
+  // USER
+  // =========================
+
   async function handleUserSubmit(event) {
     event.preventDefault();
-    setUserMessage("Creating user...");
 
     try {
       const response = await fetch("http://localhost:8080/api/users", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(userForm),
       });
 
-      if (!response.ok) throw new Error("Could not create user");
+      if (!response.ok) {
+        throw new Error("Could not create user");
+      }
 
       const createdUser = await response.json();
-      setUserMessage(`User created: ${createdUser.name} (${createdUser.mode})`);
-      setUserForm({ name: "", email: "", mode: "SELF_MANAGED" });
+
+      setUserMessage(
+        `User created: ${createdUser.name}`
+      );
+
     } catch (error) {
-      setUserMessage("Error creating user.");
+      setUserMessage("Error creating user");
     }
   }
 
+  // =========================
+  // TRAINER
+  // =========================
+
   async function handleTrainerSubmit(event) {
     event.preventDefault();
-    setTrainerMessage("Creating trainer...");
 
     try {
       const response = await fetch("http://localhost:8080/api/trainers", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(trainerForm),
       });
 
-      if (!response.ok) throw new Error("Could not create trainer");
+      if (!response.ok) {
+        throw new Error("Could not create trainer");
+      }
 
       const createdTrainer = await response.json();
-      setTrainerMessage(`Trainer created: ${createdTrainer.name}`);
-      setTrainerForm({ name: "", email: "" });
+
+      setTrainerMessage(
+        `Trainer created: ${createdTrainer.name}`
+      );
+
     } catch (error) {
-      setTrainerMessage("Error creating trainer.");
+      setTrainerMessage("Error creating trainer");
     }
   }
+
+  // =========================
+  // ASSIGN TRAINER
+  // =========================
 
   async function handleAssignmentSubmit(event) {
     event.preventDefault();
-    setAssignmentMessage("Assigning trainer...");
 
     try {
+
       const response = await fetch(
         `http://localhost:8080/api/users/${assignmentForm.userId}/assign-trainer/${assignmentForm.trainerId}`,
-        { method: "POST" }
+        {
+          method: "POST",
+        }
       );
 
-      if (!response.ok) throw new Error("Could not assign trainer");
+      if (!response.ok) {
+        throw new Error("Could not assign trainer");
+      }
 
       const assignment = await response.json();
-      setAssignmentMessage(`Trainer assigned to user: ${assignment.userName}`);
-      setAssignmentForm({ userId: "", trainerId: "" });
+
+      setAssignmentMessage(
+        `Trainer assigned to ${assignment.userName}`
+      );
+
     } catch (error) {
-      setAssignmentMessage("Error assigning trainer. Check IDs or user mode.");
+      setAssignmentMessage("Error assigning trainer");
     }
   }
 
+  // =========================
+  // TRAINING
+  // =========================
+
   async function handleTrainingSubmit(event) {
     event.preventDefault();
-    setTrainingMessage("Registering training...");
 
     try {
-      const response = await fetch("http://localhost:8080/api/trainings", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...trainingForm,
-          durationMinutes: Number(trainingForm.durationMinutes),
-        }),
-      });
 
-      if (!response.ok) throw new Error("Could not register training");
-
-      const training = await response.json();
-      setTrainingMessage(
-        `Training registered: ${training.muscleGroup} (${training.intensity})`
+      const response = await fetch(
+        "http://localhost:8080/api/trainings",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            ...trainingForm,
+            durationMinutes: Number(trainingForm.durationMinutes),
+          }),
+        }
       );
 
-      setTrainingForm({
-        userId: "",
-        date: "",
-        muscleGroup: "",
-        exercises: "",
-        intensity: "MEDIUM",
-        durationMinutes: 60,
-      });
+      if (!response.ok) {
+        throw new Error("Could not register training");
+      }
+
+      const training = await response.json();
+
+      setTrainingMessage(
+        `Training registered: ${training.muscleGroup}`
+      );
+
     } catch (error) {
-      setTrainingMessage("Error registering training. Check user ID.");
+      setTrainingMessage("Error registering training");
+    }
+  }
+
+  // =========================
+  // RECOVERY
+  // =========================
+
+  async function handleRecoverySubmit(event) {
+    event.preventDefault();
+
+    try {
+
+      const response = await fetch(
+        "http://localhost:8080/api/recovery-checkins",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            ...recoveryForm,
+            sleepHours: Number(recoveryForm.sleepHours),
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Could not register recovery");
+      }
+
+      const recovery = await response.json();
+
+      setRecoveryMessage(
+        `Recovery registered: ${recovery.fatigueLevel}`
+      );
+
+    } catch (error) {
+      setRecoveryMessage("Error registering recovery");
     }
   }
 
   return (
     <main className="page">
+
       <section className="card">
+
         <h1>El arte de la hipertrofia muscular</h1>
+
         <p>Natural hypertrophy tracking MVP</p>
 
         <div className="forms">
+
+          {/* USER */}
           <form onSubmit={handleUserSubmit}>
             <h2>Create user</h2>
 
-            <label>
-              Name
-              <input name="name" value={userForm.name} onChange={handleUserChange} required />
-            </label>
+            <input
+              name="name"
+              placeholder="Name"
+              value={userForm.name}
+              onChange={handleUserChange}
+            />
 
-            <label>
-              Email
-              <input name="email" type="email" value={userForm.email} onChange={handleUserChange} required />
-            </label>
+            <input
+              name="email"
+              placeholder="Email"
+              value={userForm.email}
+              onChange={handleUserChange}
+            />
 
-            <label>
-              Mode
-              <select name="mode" value={userForm.mode} onChange={handleUserChange}>
-                <option value="SELF_MANAGED">Self-managed</option>
-                <option value="SUPERVISED">Supervised</option>
-              </select>
-            </label>
+            <select
+              name="mode"
+              value={userForm.mode}
+              onChange={handleUserChange}
+            >
+              <option value="SELF_MANAGED">SELF_MANAGED</option>
+              <option value="SUPERVISED">SUPERVISED</option>
+            </select>
 
             <button type="submit">Create user</button>
-            {userMessage && <p className="message">{userMessage}</p>}
+
+            <p>{userMessage}</p>
           </form>
 
+          {/* TRAINER */}
           <form onSubmit={handleTrainerSubmit}>
             <h2>Create trainer</h2>
 
-            <label>
-              Name
-              <input name="name" value={trainerForm.name} onChange={handleTrainerChange} required />
-            </label>
+            <input
+              name="name"
+              placeholder="Trainer name"
+              value={trainerForm.name}
+              onChange={handleTrainerChange}
+            />
 
-            <label>
-              Email
-              <input name="email" type="email" value={trainerForm.email} onChange={handleTrainerChange} required />
-            </label>
+            <input
+              name="email"
+              placeholder="Trainer email"
+              value={trainerForm.email}
+              onChange={handleTrainerChange}
+            />
 
             <button type="submit">Create trainer</button>
-            {trainerMessage && <p className="message">{trainerMessage}</p>}
+
+            <p>{trainerMessage}</p>
           </form>
 
+          {/* ASSIGN TRAINER */}
           <form onSubmit={handleAssignmentSubmit}>
             <h2>Assign trainer</h2>
 
-            <label>
-              User ID
-              <input name="userId" value={assignmentForm.userId} onChange={handleAssignmentChange} required />
-            </label>
+            <input
+              name="userId"
+              placeholder="User ID"
+              value={assignmentForm.userId}
+              onChange={handleAssignmentChange}
+            />
 
-            <label>
-              Trainer ID
-              <input name="trainerId" value={assignmentForm.trainerId} onChange={handleAssignmentChange} required />
-            </label>
+            <input
+              name="trainerId"
+              placeholder="Trainer ID"
+              value={assignmentForm.trainerId}
+              onChange={handleAssignmentChange}
+            />
 
             <button type="submit">Assign trainer</button>
-            {assignmentMessage && <p className="message">{assignmentMessage}</p>}
+
+            <p>{assignmentMessage}</p>
           </form>
 
+          {/* TRAINING */}
           <form onSubmit={handleTrainingSubmit}>
             <h2>Register training</h2>
 
-            <label>
-              User ID
-              <input name="userId" value={trainingForm.userId} onChange={handleTrainingChange} required />
-            </label>
+            <input
+              name="userId"
+              placeholder="User ID"
+              value={trainingForm.userId}
+              onChange={handleTrainingChange}
+            />
 
-            <label>
-              Date
-              <input name="date" type="date" value={trainingForm.date} onChange={handleTrainingChange} required />
-            </label>
+            <input
+              type="date"
+              name="date"
+              value={trainingForm.date}
+              onChange={handleTrainingChange}
+            />
 
-            <label>
-              Muscle group
-              <input name="muscleGroup" value={trainingForm.muscleGroup} onChange={handleTrainingChange} required />
-            </label>
+            <input
+              name="muscleGroup"
+              placeholder="Muscle group"
+              value={trainingForm.muscleGroup}
+              onChange={handleTrainingChange}
+            />
 
-            <label>
-              Exercises
-              <input name="exercises" value={trainingForm.exercises} onChange={handleTrainingChange} required />
-            </label>
+            <input
+              name="exercises"
+              placeholder="Exercises"
+              value={trainingForm.exercises}
+              onChange={handleTrainingChange}
+            />
 
-            <label>
-              Intensity
-              <select name="intensity" value={trainingForm.intensity} onChange={handleTrainingChange}>
-                <option value="LOW">Low</option>
-                <option value="MEDIUM">Medium</option>
-                <option value="HIGH">High</option>
-              </select>
-            </label>
+            <select
+              name="intensity"
+              value={trainingForm.intensity}
+              onChange={handleTrainingChange}
+            >
+              <option value="LOW">LOW</option>
+              <option value="MEDIUM">MEDIUM</option>
+              <option value="HIGH">HIGH</option>
+            </select>
 
-            <label>
-              Duration minutes
-              <input
-                name="durationMinutes"
-                type="number"
-                min="1"
-                value={trainingForm.durationMinutes}
-                onChange={handleTrainingChange}
-                required
-              />
-            </label>
+            <input
+              type="number"
+              name="durationMinutes"
+              placeholder="Duration"
+              value={trainingForm.durationMinutes}
+              onChange={handleTrainingChange}
+            />
 
             <button type="submit">Register training</button>
-            {trainingMessage && <p className="message">{trainingMessage}</p>}
+
+            <p>{trainingMessage}</p>
           </form>
+
+          {/* RECOVERY */}
+          <form onSubmit={handleRecoverySubmit}>
+            <h2>Recovery check-in</h2>
+
+            <input
+              name="userId"
+              placeholder="User ID"
+              value={recoveryForm.userId}
+              onChange={handleRecoveryChange}
+            />
+
+            <input
+              type="date"
+              name="date"
+              value={recoveryForm.date}
+              onChange={handleRecoveryChange}
+            />
+
+            <select
+              name="fatigueLevel"
+              value={recoveryForm.fatigueLevel}
+              onChange={handleRecoveryChange}
+            >
+              <option value="LOW">LOW</option>
+              <option value="MEDIUM">MEDIUM</option>
+              <option value="HIGH">HIGH</option>
+            </select>
+
+            <select
+              name="sorenessLevel"
+              value={recoveryForm.sorenessLevel}
+              onChange={handleRecoveryChange}
+            >
+              <option value="LOW">LOW</option>
+              <option value="MEDIUM">MEDIUM</option>
+              <option value="HIGH">HIGH</option>
+            </select>
+
+            <select
+              name="energyLevel"
+              value={recoveryForm.energyLevel}
+              onChange={handleRecoveryChange}
+            >
+              <option value="LOW">LOW</option>
+              <option value="MEDIUM">MEDIUM</option>
+              <option value="HIGH">HIGH</option>
+            </select>
+
+            <input
+              type="number"
+              step="0.5"
+              name="sleepHours"
+              placeholder="Sleep hours"
+              value={recoveryForm.sleepHours}
+              onChange={handleRecoveryChange}
+            />
+
+            <textarea
+              name="notes"
+              placeholder="Recovery notes"
+              value={recoveryForm.notes}
+              onChange={handleRecoveryChange}
+            />
+
+            <button type="submit">Register recovery</button>
+
+            <p>{recoveryMessage}</p>
+          </form>
+
         </div>
+
       </section>
+
     </main>
   );
 }
