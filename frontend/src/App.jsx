@@ -53,6 +53,20 @@ function App() {
 
   const [recoveryMessage, setRecoveryMessage] = useState("");
 
+  // NUTRITION
+  const [nutritionForm, setNutritionForm] = useState({
+    userId: "",
+    date: "",
+    calories: "",
+    proteinGrams: "",
+    carbsGrams: "",
+    fatGrams: "",
+    hydrationLiters: "",
+    notes: "",
+  });
+
+  const [nutritionResult, setNutritionResult] = useState(null);
+
   // =========================
   // HANDLERS
   // =========================
@@ -82,6 +96,11 @@ function App() {
     setRecoveryForm({ ...recoveryForm, [name]: value });
   }
 
+  function handleNutritionChange(event) {
+    const { name, value } = event.target;
+    setNutritionForm({ ...nutritionForm, [name]: value });
+  }
+
   // =========================
   // USER
   // =========================
@@ -104,9 +123,7 @@ function App() {
 
       const createdUser = await response.json();
 
-      setUserMessage(
-        `User created: ${createdUser.name}`
-      );
+      setUserMessage(`User created: ${createdUser.name}`);
 
     } catch (error) {
       setUserMessage("Error creating user");
@@ -135,9 +152,7 @@ function App() {
 
       const createdTrainer = await response.json();
 
-      setTrainerMessage(
-        `Trainer created: ${createdTrainer.name}`
-      );
+      setTrainerMessage(`Trainer created: ${createdTrainer.name}`);
 
     } catch (error) {
       setTrainerMessage("Error creating trainer");
@@ -152,7 +167,6 @@ function App() {
     event.preventDefault();
 
     try {
-
       const response = await fetch(
         `http://localhost:8080/api/users/${assignmentForm.userId}/assign-trainer/${assignmentForm.trainerId}`,
         {
@@ -166,9 +180,7 @@ function App() {
 
       const assignment = await response.json();
 
-      setAssignmentMessage(
-        `Trainer assigned to ${assignment.userName}`
-      );
+      setAssignmentMessage(`Trainer assigned to ${assignment.userName}`);
 
     } catch (error) {
       setAssignmentMessage("Error assigning trainer");
@@ -183,20 +195,16 @@ function App() {
     event.preventDefault();
 
     try {
-
-      const response = await fetch(
-        "http://localhost:8080/api/trainings",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            ...trainingForm,
-            durationMinutes: Number(trainingForm.durationMinutes),
-          }),
-        }
-      );
+      const response = await fetch("http://localhost:8080/api/trainings", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...trainingForm,
+          durationMinutes: Number(trainingForm.durationMinutes),
+        }),
+      });
 
       if (!response.ok) {
         throw new Error("Could not register training");
@@ -204,9 +212,7 @@ function App() {
 
       const training = await response.json();
 
-      setTrainingMessage(
-        `Training registered: ${training.muscleGroup}`
-      );
+      setTrainingMessage(`Training registered: ${training.muscleGroup}`);
 
     } catch (error) {
       setTrainingMessage("Error registering training");
@@ -221,20 +227,16 @@ function App() {
     event.preventDefault();
 
     try {
-
-      const response = await fetch(
-        "http://localhost:8080/api/recovery-checkins",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            ...recoveryForm,
-            sleepHours: Number(recoveryForm.sleepHours),
-          }),
-        }
-      );
+      const response = await fetch("http://localhost:8080/api/recovery-checkins", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...recoveryForm,
+          sleepHours: Number(recoveryForm.sleepHours),
+        }),
+      });
 
       if (!response.ok) {
         throw new Error("Could not register recovery");
@@ -242,12 +244,44 @@ function App() {
 
       const recovery = await response.json();
 
-      setRecoveryMessage(
-        `Recovery registered: ${recovery.fatigueLevel}`
-      );
+      setRecoveryMessage(`Recovery registered: ${recovery.fatigueLevel}`);
 
     } catch (error) {
       setRecoveryMessage("Error registering recovery");
+    }
+  }
+
+  // =========================
+  // NUTRITION
+  // =========================
+
+  async function handleNutritionSubmit(event) {
+    event.preventDefault();
+
+    try {
+      const response = await fetch("http://localhost:8080/api/nutrition-entries", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: nutritionForm.userId,
+          date: nutritionForm.date,
+          calories: Number(nutritionForm.calories),
+          proteinGrams: Number(nutritionForm.proteinGrams),
+          carbsGrams: Number(nutritionForm.carbsGrams),
+          fatGrams: Number(nutritionForm.fatGrams),
+          hydrationLiters: Number(nutritionForm.hydrationLiters),
+          notes: nutritionForm.notes,
+        }),
+      });
+
+      const data = await response.json();
+
+      setNutritionResult(data);
+
+    } catch (error) {
+      console.error(error);
     }
   }
 
@@ -463,6 +497,91 @@ function App() {
 
             <p>{recoveryMessage}</p>
           </form>
+
+          {/* NUTRITION */}
+          <div className="card">
+            <h2>Nutrition macros</h2>
+
+            <form onSubmit={handleNutritionSubmit}>
+
+              <input
+                type="text"
+                name="userId"
+                placeholder="User ID"
+                value={nutritionForm.userId}
+                onChange={handleNutritionChange}
+              />
+
+              <input
+                type="date"
+                name="date"
+                value={nutritionForm.date}
+                onChange={handleNutritionChange}
+              />
+
+              <input
+                type="number"
+                name="calories"
+                placeholder="Calories"
+                value={nutritionForm.calories}
+                onChange={handleNutritionChange}
+              />
+
+              <input
+                type="number"
+                step="0.1"
+                name="proteinGrams"
+                placeholder="Protein grams"
+                value={nutritionForm.proteinGrams}
+                onChange={handleNutritionChange}
+              />
+
+              <input
+                type="number"
+                step="0.1"
+                name="carbsGrams"
+                placeholder="Carbs grams"
+                value={nutritionForm.carbsGrams}
+                onChange={handleNutritionChange}
+              />
+
+              <input
+                type="number"
+                step="0.1"
+                name="fatGrams"
+                placeholder="Fat grams"
+                value={nutritionForm.fatGrams}
+                onChange={handleNutritionChange}
+              />
+
+              <input
+                type="number"
+                step="0.1"
+                name="hydrationLiters"
+                placeholder="Hydration liters"
+                value={nutritionForm.hydrationLiters}
+                onChange={handleNutritionChange}
+              />
+
+              <textarea
+                name="notes"
+                placeholder="Nutrition notes"
+                value={nutritionForm.notes}
+                onChange={handleNutritionChange}
+              />
+
+              <button type="submit">
+                Register nutrition
+              </button>
+
+            </form>
+
+            {nutritionResult && (
+              <p>
+                Nutrition registered: {nutritionResult.calories} kcal
+              </p>
+            )}
+          </div>
 
         </div>
 
