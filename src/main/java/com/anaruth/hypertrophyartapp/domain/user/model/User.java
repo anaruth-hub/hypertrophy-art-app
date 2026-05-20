@@ -55,6 +55,7 @@ public class User {
         }
         this.trainerId = trainerId;
     }
+
     private String validateName(String name) {
         if (name == null || name.isBlank()) {
             throw new IllegalArgumentException("User name cannot be blank");

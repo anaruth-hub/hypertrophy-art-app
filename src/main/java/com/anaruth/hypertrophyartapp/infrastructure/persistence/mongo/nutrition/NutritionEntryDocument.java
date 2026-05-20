@@ -45,13 +45,39 @@ public class NutritionEntryDocument {
         this.notes = notes;
     }
 
-    public String getId() { return id; }
-    public String getUserId() { return userId; }
-    public LocalDate getDate() { return date; }
-    public int getCalories() { return calories; }
-    public double getProteinGrams() { return proteinGrams; }
-    public double getCarbsGrams() { return carbsGrams; }
-    public double getFatGrams() { return fatGrams; }
-    public double getHydrationLiters() { return hydrationLiters; }
-    public String getNotes() { return notes; }
+    public String getId() {
+        return id;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public int getCalories() {
+        return calories;
+    }
+
+    public double getProteinGrams() {
+        return proteinGrams;
+    }
+
+    public double getCarbsGrams() {
+        return carbsGrams;
+    }
+
+    public double getFatGrams() {
+        return fatGrams;
+    }
+
+    public double getHydrationLiters() {
+        return hydrationLiters;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
 }
