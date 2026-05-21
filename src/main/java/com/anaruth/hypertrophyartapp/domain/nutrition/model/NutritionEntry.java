@@ -17,17 +17,7 @@ public class NutritionEntry {
     private final double hydrationLiters;
     private final String notes;
 
-    private NutritionEntry(
-            NutritionEntryId id,
-            UserId userId,
-            LocalDate date,
-            int calories,
-            double proteinGrams,
-            double carbsGrams,
-            double fatGrams,
-            double hydrationLiters,
-            String notes
-    ) {
+    private NutritionEntry(NutritionEntryId id, UserId userId, LocalDate date, int calories, double proteinGrams, double carbsGrams, double fatGrams, double hydrationLiters, String notes) {
         this.id = Objects.requireNonNull(id);
         this.userId = Objects.requireNonNull(userId);
         this.date = Objects.requireNonNull(date);
@@ -39,51 +29,12 @@ public class NutritionEntry {
         this.notes = notes == null ? "" : notes.trim();
     }
 
-    public static NutritionEntry create(
-            UserId userId,
-            LocalDate date,
-            int calories,
-            double proteinGrams,
-            double carbsGrams,
-            double fatGrams,
-            double hydrationLiters,
-            String notes
-    ) {
-        return new NutritionEntry(
-                NutritionEntryId.newId(),
-                userId,
-                date,
-                calories,
-                proteinGrams,
-                carbsGrams,
-                fatGrams,
-                hydrationLiters,
-                notes
-        );
+    public static NutritionEntry create(UserId userId, LocalDate date, int calories, double proteinGrams, double carbsGrams, double fatGrams, double hydrationLiters, String notes) {
+        return new NutritionEntry(NutritionEntryId.newId(), userId, date, calories, proteinGrams, carbsGrams, fatGrams, hydrationLiters, notes);
     }
 
-    public static NutritionEntry restore(
-            NutritionEntryId id,
-            UserId userId,
-            LocalDate date,
-            int calories,
-            double proteinGrams,
-            double carbsGrams,
-            double fatGrams,
-            double hydrationLiters,
-            String notes
-    ) {
-        return new NutritionEntry(
-                id,
-                userId,
-                date,
-                calories,
-                proteinGrams,
-                carbsGrams,
-                fatGrams,
-                hydrationLiters,
-                notes
-        );
+    public static NutritionEntry restore(NutritionEntryId id, UserId userId, LocalDate date, int calories, double proteinGrams, double carbsGrams, double fatGrams, double hydrationLiters, String notes) {
+        return new NutritionEntry(id, userId, date, calories, proteinGrams, carbsGrams, fatGrams, hydrationLiters, notes);
     }
 
     private int validateCalories(int calories) {

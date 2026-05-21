@@ -8,7 +8,7 @@ public final class UserId {
     private final UUID value;
 
     private UserId(UUID value) {
-                this.value = Objects.requireNonNull(value, "User id cannot be null");
+        this.value = Objects.requireNonNull(value, "User id cannot be null");
     }
 
     public static UserId newId() {

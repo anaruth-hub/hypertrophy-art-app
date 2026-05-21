@@ -14,7 +14,8 @@ public class TrainerEntity {
     private String name;
     private String email;
 
-    public TrainerEntity() {}
+    public TrainerEntity() {
+    }
 
     public TrainerEntity(String id, String name, String email) {
         this.id = id;
