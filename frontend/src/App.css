@@ -168,3 +168,76 @@ textarea {
     padding: 20px;
   }
 }
+
+.summary-search {
+  display: grid;
+  gap: 18px;
+  margin-bottom: 32px;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  width: 100%;
+}
+
+.summary-card {
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  border-radius: 20px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: left;
+  transition: transform 0.2s ease;
+}
+
+.summary-card:hover {
+  transform: translateY(-2px);
+}
+
+.summary-card span {
+  color: #94a3b8;
+  font-size: 0.95rem;
+}
+
+.summary-card strong {
+  color: #f8fafc;
+  font-size: 1.7rem;
+  font-weight: 700;
+}
+
+.summary-card small {
+  color: #cbd5e1;
+  font-size: 0.9rem;
+}
+
+.summary-list {
+  width: min(680px, 100%);
+  margin: 28px auto 0;
+  display: grid;
+  gap: 12px;
+}
+
+.summary-list p {
+  margin: 0;
+  padding: 14px 18px;
+  border-radius: 14px;
+  background: rgba(15, 23, 42, 0.55);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.summary-list span {
+  color: #94a3b8;
+  font-weight: 600;
+}
+
+.summary-list strong {
+  color: #f8fafc;
+  text-align: right;
+}
