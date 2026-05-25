@@ -3,6 +3,8 @@ package com.anaruth.hypertrophyartapp.infrastructure.persistence.mongo.recovery;
 import com.anaruth.hypertrophyartapp.application.recovery.port.out.RecoveryCheckInRepository;
 import com.anaruth.hypertrophyartapp.domain.recovery.model.RecoveryCheckIn;
 import org.springframework.stereotype.Component;
+import com.anaruth.hypertrophyartapp.domain.user.model.UserId;
+import java.util.List;
 
 @Component
 public class MongoRecoveryCheckInPersistenceAdapter
@@ -29,5 +31,13 @@ public class MongoRecoveryCheckInPersistenceAdapter
                 repository.save(document);
 
         return mapper.toDomain(saved);
+    }
+
+    @Override
+    public List<RecoveryCheckIn> findByUserId(UserId userId) {
+        return repository.findByUserId(userId.value().toString())
+                .stream()
+                .map(mapper::toDomain)
+                .toList();
     }
 }
