@@ -3,6 +3,8 @@ package com.anaruth.hypertrophyartapp.infrastructure.persistence.mongo.nutrition
 import com.anaruth.hypertrophyartapp.application.nutrition.port.out.NutritionEntryRepository;
 import com.anaruth.hypertrophyartapp.domain.nutrition.model.NutritionEntry;
 import org.springframework.stereotype.Component;
+import com.anaruth.hypertrophyartapp.domain.user.model.UserId;
+import java.util.List;
 
 @Component
 public class MongoNutritionEntryPersistenceAdapter implements NutritionEntryRepository {
@@ -19,5 +21,13 @@ public class MongoNutritionEntryPersistenceAdapter implements NutritionEntryRepo
         NutritionEntryDocument document = mapper.toDocument(nutritionEntry);
         NutritionEntryDocument saved = repository.save(document);
         return mapper.toDomain(saved);
+    }
+
+    @Override
+    public List<NutritionEntry> findByUserId(UserId userId) {
+        return repository.findByUserId(userId.value().toString())
+                .stream()
+                .map(mapper::toDomain)
+                .toList();
     }
 }

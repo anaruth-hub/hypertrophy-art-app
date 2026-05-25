@@ -4,6 +4,8 @@ import com.anaruth.hypertrophyartapp.application.training.port.out.TrainingRepos
 import com.anaruth.hypertrophyartapp.domain.training.model.Training;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
+import com.anaruth.hypertrophyartapp.domain.user.model.UserId;
+import java.util.List;
 
 @Repository
 @Primary
@@ -21,5 +23,13 @@ public class MongoTrainingPersistenceAdapter implements TrainingRepository {
         TrainingDocument document = mapper.toDocument(training);
         TrainingDocument saved = repository.save(document);
         return mapper.toDomain(saved);
+    }
+
+    @Override
+    public List<Training> findByUserId(UserId userId) {
+        return repository.findByUserId(userId.value().toString())
+                .stream()
+                .map(mapper::toDomain)
+                .toList();
     }
 }
