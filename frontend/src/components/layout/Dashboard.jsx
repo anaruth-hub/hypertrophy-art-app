@@ -10,6 +10,7 @@ import RecoveryForm from "../forms/RecoveryForm";
 import NutritionForm from "../forms/NutritionForm";
 import WellnessForm from "../forms/WellnessForm";
 import ProgressSummary from "../forms/ProgressSummary";
+import TrainerProgressSummary from "../forms/TrainerProgressSummary";
 function Dashboard() {
 
   const [activeTab, setActiveTab] = useState("users");
@@ -50,6 +51,8 @@ function Dashboard() {
         {activeTab === "wellness" && <WellnessForm />}
 
         {activeTab === "progress" && <ProgressSummary />}
+
+        {activeTab === "trainer-progress" && <TrainerProgressSummary />}
 
       </section>
 
