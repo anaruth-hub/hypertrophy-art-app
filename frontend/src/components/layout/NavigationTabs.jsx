@@ -9,7 +9,8 @@ function NavigationTabs({ activeTab, onTabChange }) {
     "nutrition",
     "wellness",
     "progress",
-    "trainer-progress"
+    "trainer-progress",
+    "recommendation"
   ];
 
   return (
