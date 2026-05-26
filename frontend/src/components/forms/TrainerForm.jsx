@@ -9,6 +9,7 @@ function TrainerForm() {
   });
 
   const [trainerMessage, setTrainerMessage] = useState("");
+  const [createdTrainer, setCreatedTrainer] = useState(null);
 
   function handleTrainerChange(event) {
 
@@ -43,8 +44,10 @@ function TrainerForm() {
 
       const createdTrainer = await response.json();
 
+      setCreatedTrainer(createdTrainer);
+
       setTrainerMessage(
-        `Trainer created: ${createdTrainer.name}`
+        `Trainer created successfully: ${createdTrainer.name}`
       );
 
       setTrainerForm({
@@ -55,9 +58,18 @@ function TrainerForm() {
     } catch (error) {
 
       setTrainerMessage(
-        "Error creating trainer"
+        "Could not create trainer. Please check the form data."
       );
     }
+  }
+
+  async function copyTrainerId() {
+    if (!createdTrainer?.id) {
+      return;
+    }
+
+    await navigator.clipboard.writeText(createdTrainer.id);
+    setTrainerMessage("Trainer ID copied to clipboard.");
   }
 
   return (
@@ -94,6 +106,31 @@ function TrainerForm() {
         <p className="message">
           {trainerMessage}
         </p>
+      )}
+
+      {createdTrainer && (
+        <div className="created-card">
+          <h3>Created trainer</h3>
+
+          <p>
+            <span>Name</span>
+            <strong>{createdTrainer.name}</strong>
+          </p>
+
+          <p>
+            <span>Email</span>
+            <strong>{createdTrainer.email}</strong>
+          </p>
+
+          <p>
+            <span>Trainer ID</span>
+            <strong>{createdTrainer.id}</strong>
+          </p>
+
+          <button type="button" onClick={copyTrainerId}>
+            Copy Trainer ID
+          </button>
+        </div>
       )}
 
     </form>

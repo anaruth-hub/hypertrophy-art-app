@@ -33,7 +33,7 @@ function TrainerProgressSummary() {
       setMessage("");
     } catch (error) {
       setSummary(null);
-      setMessage("Error loading assigned user progress");
+      setMessage("Could not load assigned user progress. Check trainer ID and user ID.");
     }
   }
 
@@ -41,10 +41,14 @@ function TrainerProgressSummary() {
     <section className="form-card">
       <h2>Trainer progress view</h2>
 
+      <p className="form-helper">
+        Use a Trainer ID and an assigned User ID to view supervised progress.
+      </p>
+
       <form onSubmit={handleSubmit} className="summary-search">
         <input
           name="trainerId"
-          placeholder="Trainer ID"
+          placeholder="Paste here the generated Trainer ID"
           value={form.trainerId}
           onChange={handleChange}
           required
@@ -52,7 +56,7 @@ function TrainerProgressSummary() {
 
         <input
           name="userId"
-          placeholder="Assigned User ID"
+          placeholder="Paste here the assigned User ID"
           value={form.userId}
           onChange={handleChange}
           required

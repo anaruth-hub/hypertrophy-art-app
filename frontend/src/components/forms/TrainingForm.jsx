@@ -39,9 +39,18 @@ function TrainingForm() {
 
       const training = await response.json();
 
-      setTrainingMessage(`Training registered: ${training.muscleGroup}`);
+      setTrainingMessage(`Training registered successfully: ${training.muscleGroup}`);
+
+      setTrainingForm({
+        userId: "",
+        date: "",
+        muscleGroup: "",
+        exercises: "",
+        intensity: "MEDIUM",
+        durationMinutes: 60,
+      });
     } catch (error) {
-      setTrainingMessage("Error registering training");
+      setTrainingMessage("Could not register training. Check user ID and required fields.");
     }
   }
 
@@ -49,9 +58,13 @@ function TrainingForm() {
     <form className="form-card" onSubmit={handleTrainingSubmit}>
       <h2>Register training</h2>
 
+      <p className="form-helper">
+        Use a generated User ID before registering training data.
+      </p>
+
       <input
         name="userId"
-        placeholder="User ID"
+        placeholder="Paste here the generated User ID"
         value={trainingForm.userId}
         onChange={handleTrainingChange}
         required

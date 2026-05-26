@@ -24,7 +24,7 @@ function ProgressSummary() {
       setMessage("");
     } catch (error) {
       setSummary(null);
-      setMessage("Error loading progress summary");
+      setMessage("Could not load progress summary. Check the user ID.");
     }
   }
 
@@ -32,10 +32,14 @@ function ProgressSummary() {
     <section className="form-card">
       <h2>Progress summary</h2>
 
+      <p className="form-helper">
+        Paste a User ID to view training, recovery, nutrition and wellness progress.
+      </p>
+
       <form onSubmit={handleSubmit} className="summary-search">
         <input
           name="userId"
-          placeholder="User ID"
+          placeholder="Paste here the generated User ID"
           value={userId}
           onChange={(event) => setUserId(event.target.value)}
           required

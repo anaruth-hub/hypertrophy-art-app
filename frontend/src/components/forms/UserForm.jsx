@@ -9,6 +9,7 @@ function UserForm() {
   });
 
   const [userMessage, setUserMessage] = useState("");
+  const [createdUser, setCreatedUser] = useState(null);
 
   function handleUserChange(event) {
     const { name, value } = event.target;
@@ -33,7 +34,9 @@ function UserForm() {
 
       const createdUser = await response.json();
 
-      setUserMessage(`User created: ${createdUser.name}`);
+      setCreatedUser(createdUser);
+
+      setUserMessage(`User created successfully: ${createdUser.name}`);
 
       setUserForm({
         name: "",
@@ -41,8 +44,17 @@ function UserForm() {
         mode: "SELF_MANAGED",
       });
     } catch (error) {
-      setUserMessage("Error creating user");
+      setUserMessage("Could not create user. Please check the form data.");
     }
+  }
+
+  async function copyUserId() {
+    if (!createdUser?.id) {
+      return;
+    }
+
+    await navigator.clipboard.writeText(createdUser.id);
+    setUserMessage("User ID copied to clipboard.");
   }
 
   return (
@@ -74,6 +86,36 @@ function UserForm() {
       <button type="submit">Create user</button>
 
       {userMessage && <p className="message">{userMessage}</p>}
+
+      {createdUser && (
+        <div className="created-card">
+          <h3>Created user</h3>
+
+          <p>
+            <span>Name</span>
+            <strong>{createdUser.name}</strong>
+          </p>
+
+          <p>
+            <span>Email</span>
+            <strong>{createdUser.email}</strong>
+          </p>
+
+          <p>
+            <span>Mode</span>
+            <strong>{createdUser.mode}</strong>
+          </p>
+
+          <p>
+            <span>User ID</span>
+            <strong>{createdUser.id}</strong>
+          </p>
+
+          <button type="button" onClick={copyUserId}>
+            Copy User ID
+          </button>
+        </div>
+      )}
     </form>
   );
 }

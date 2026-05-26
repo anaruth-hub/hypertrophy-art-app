@@ -38,9 +38,20 @@ function WellnessForm() {
 
       const wellness = await response.json();
 
-      setWellnessMessage(`Wellness registered: ${wellness.emotionalState}`);
+      setWellnessMessage(`Wellness registered successfully: ${wellness.emotionalState}`);
+
+      setWellnessForm({
+        userId: "",
+        date: "",
+        physicalState: "MEDIUM",
+        mentalState: "MEDIUM",
+        emotionalState: "MEDIUM",
+        stressLevel: "MEDIUM",
+        motivationLevel: "MEDIUM",
+        notes: "",
+      });
     } catch (error) {
-      setWellnessMessage("Error registering wellness");
+      setWellnessMessage("Could not register wellness. Check user ID and required fields.");
     }
   }
 
@@ -48,9 +59,13 @@ function WellnessForm() {
     <form className="form-card" onSubmit={handleWellnessSubmit}>
       <h2>Wellness check-in</h2>
 
+      <p className="form-helper">
+        Use a generated User ID to connect wellness data to a profile.
+      </p>
+
       <input
         name="userId"
-        placeholder="User ID"
+        placeholder="Paste here the generated User ID"
         value={wellnessForm.userId}
         onChange={handleWellnessChange}
         required

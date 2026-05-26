@@ -1,38 +1,32 @@
+const tabs = [
+  { id: "users", label: "Users" },
+  { id: "trainers", label: "Trainers" },
+  { id: "assignment", label: "Assign Trainer" },
+  { id: "training", label: "Training" },
+  { id: "recovery", label: "Recovery" },
+  { id: "nutrition", label: "Nutrition" },
+  { id: "wellness", label: "Wellness" },
+  { id: "progress", label: "Progress" },
+  { id: "trainer-progress", label: "Trainer Progress" },
+  { id: "recommendation", label: "Recommendation" },
+];
+
 function NavigationTabs({ activeTab, onTabChange }) {
-
-  const tabs = [
-    "users",
-    "trainers",
-    "assignment",
-    "training",
-    "recovery",
-    "nutrition",
-    "wellness",
-    "progress",
-    "trainer-progress",
-    "recommendation"
-  ];
-
   return (
-
     <nav className="tabs">
-
       {tabs.map((tab) => (
-
         <button
-          key={tab}
+          key={tab.id}
           className={
-            activeTab === tab
+            activeTab === tab.id
               ? "tab-button active"
               : "tab-button"
           }
-          onClick={() => onTabChange(tab)}
+          onClick={() => onTabChange(tab.id)}
         >
-          {tab}
+          {tab.label}
         </button>
-
       ))}
-
     </nav>
   );
 }
