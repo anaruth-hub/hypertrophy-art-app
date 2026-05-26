@@ -65,9 +65,13 @@ function AssignmentForm() {
 
       <h2>Assign trainer</h2>
 
+      <p className="form-helper">
+        Use the IDs generated in the Users and Trainers tabs.
+      </p>
+
       <input
         name="userId"
-        placeholder="User ID"
+        placeholder="Paste here the generated User ID"
         value={assignmentForm.userId}
         onChange={handleAssignmentChange}
         required
@@ -75,7 +79,7 @@ function AssignmentForm() {
 
       <input
         name="trainerId"
-        placeholder="Trainer ID"
+        placeholder="Paste here the generated Trainer ID"
         value={assignmentForm.trainerId}
         onChange={handleAssignmentChange}
         required

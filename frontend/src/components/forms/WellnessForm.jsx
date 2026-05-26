@@ -59,9 +59,13 @@ function WellnessForm() {
     <form className="form-card" onSubmit={handleWellnessSubmit}>
       <h2>Wellness check-in</h2>
 
+      <p className="form-helper">
+        Use a generated User ID to connect wellness data to a profile.
+      </p>
+
       <input
         name="userId"
-        placeholder="User ID"
+        placeholder="Paste here the generated User ID"
         value={wellnessForm.userId}
         onChange={handleWellnessChange}
         required

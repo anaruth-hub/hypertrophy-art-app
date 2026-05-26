@@ -32,10 +32,14 @@ function DeloadRecommendation() {
     <section className="form-card">
       <h2>Deload recommendation</h2>
 
+      <p className="form-helper">
+        Paste a User ID to receive a basic fatigue and deload recommendation.
+      </p>
+
       <form onSubmit={handleSubmit} className="summary-search">
         <input
           name="userId"
-          placeholder="User ID"
+          placeholder="Paste here the generated User ID"
           value={userId}
           onChange={(event) => setUserId(event.target.value)}
           required

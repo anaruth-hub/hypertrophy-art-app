@@ -60,9 +60,13 @@ function RecoveryForm() {
     <form className="form-card" onSubmit={handleRecoverySubmit}>
       <h2>Recovery check-in</h2>
 
+      <p className="form-helper">
+        Use a generated User ID to connect recovery data to a profile.
+      </p>
+
       <input
         name="userId"
-        placeholder="User ID"
+        placeholder="Paste here the generated User ID"
         value={recoveryForm.userId}
         onChange={handleRecoveryChange}
         required

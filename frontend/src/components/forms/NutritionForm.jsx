@@ -68,9 +68,13 @@ function NutritionForm() {
     <form className="form-card" onSubmit={handleNutritionSubmit}>
       <h2>Nutrition macros</h2>
 
+      <p className="form-helper">
+        Use a generated User ID to connect nutrition data to a profile.
+      </p>
+
       <input
         name="userId"
-        placeholder="User ID"
+        placeholder="Paste here the generated User ID"
         value={nutritionForm.userId}
         onChange={handleNutritionChange}
         required

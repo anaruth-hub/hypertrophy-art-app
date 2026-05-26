@@ -277,3 +277,11 @@ textarea {
 .created-card button {
   margin-top: 6px;
 }
+
+.form-helper {
+  margin: -6px 0 4px;
+  color: #b7c7d8;
+  font-size: 0.95rem;
+  text-align: center;
+  line-height: 1.5;
+}
