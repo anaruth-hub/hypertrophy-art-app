@@ -33,7 +33,7 @@ function TrainerProgressSummary() {
       setMessage("");
     } catch (error) {
       setSummary(null);
-      setMessage("Error loading assigned user progress");
+      setMessage("Could not load assigned user progress. Check trainer ID and user ID.");
     }
   }
 

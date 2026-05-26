@@ -47,7 +47,8 @@ function NutritionForm() {
 
       const nutrition = await response.json();
 
-      setNutritionMessage(`Nutrition registered: ${nutrition.calories} kcal`);
+      setNutritionMessage(`Nutrition registered successfully: ${nutrition.calories} kcal`);
+
       setNutritionForm({
         userId: "",
         date: "",
@@ -59,7 +60,7 @@ function NutritionForm() {
         notes: "",
       });
     } catch (error) {
-      setNutritionMessage("Error registering nutrition");
+      setNutritionMessage("Could not register nutrition. Check user ID and required fields.");
     }
   }
 

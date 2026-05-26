@@ -39,7 +39,8 @@ function TrainingForm() {
 
       const training = await response.json();
 
-      setTrainingMessage(`Training registered: ${training.muscleGroup}`);
+      setTrainingMessage(`Training registered successfully: ${training.muscleGroup}`);
+
       setTrainingForm({
         userId: "",
         date: "",
@@ -49,7 +50,7 @@ function TrainingForm() {
         durationMinutes: 60,
       });
     } catch (error) {
-      setTrainingMessage("Error registering training");
+      setTrainingMessage("Could not register training. Check user ID and required fields.");
     }
   }
 

@@ -24,7 +24,7 @@ function DeloadRecommendation() {
       setMessage("");
     } catch (error) {
       setRecommendation(null);
-      setMessage("Error loading recommendation");
+      setMessage("Could not load recommendation. Check the user ID.");
     }
   }
 

@@ -40,7 +40,7 @@ function AssignmentForm() {
       const result = await response.json();
 
       setAssignmentMessage(
-        `Trainer assigned to ${result.userName}`
+        `Trainer assigned successfully to ${result.userName}`
       );
 
       setAssignmentForm({
@@ -51,7 +51,7 @@ function AssignmentForm() {
     } catch (error) {
 
       setAssignmentMessage(
-        "Error assigning trainer"
+        "Could not assign trainer. Check user mode and IDs."
       );
     }
   }

@@ -33,7 +33,7 @@ function UserForm() {
 
       const createdUser = await response.json();
 
-      setUserMessage(`User created: ${createdUser.name}`);
+      setUserMessage(`User created successfully: ${createdUser.name}`);
 
       setUserForm({
         name: "",
@@ -41,7 +41,7 @@ function UserForm() {
         mode: "SELF_MANAGED",
       });
     } catch (error) {
-      setUserMessage("Error creating user");
+      setUserMessage("Could not create user. Please check the form data.");
     }
   }
 

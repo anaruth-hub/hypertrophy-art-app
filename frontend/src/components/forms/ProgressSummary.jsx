@@ -24,7 +24,7 @@ function ProgressSummary() {
       setMessage("");
     } catch (error) {
       setSummary(null);
-      setMessage("Error loading progress summary");
+      setMessage("Could not load progress summary. Check the user ID.");
     }
   }
 

@@ -44,7 +44,7 @@ function TrainerForm() {
       const createdTrainer = await response.json();
 
       setTrainerMessage(
-        `Trainer created: ${createdTrainer.name}`
+        `Trainer created successfully: ${createdTrainer.name}`
       );
 
       setTrainerForm({
@@ -55,7 +55,7 @@ function TrainerForm() {
     } catch (error) {
 
       setTrainerMessage(
-        "Error creating trainer"
+        "Could not create trainer. Please check the form data."
       );
     }
   }

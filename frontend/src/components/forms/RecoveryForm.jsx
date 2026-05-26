@@ -40,7 +40,8 @@ function RecoveryForm() {
 
       const recovery = await response.json();
 
-      setRecoveryMessage(`Recovery registered: ${recovery.fatigueLevel}`);
+      setRecoveryMessage(`Recovery registered successfully: ${recovery.fatigueLevel}`);
+
       setRecoveryForm({
         userId: "",
         date: "",
@@ -51,7 +52,7 @@ function RecoveryForm() {
         notes: "",
       });
     } catch (error) {
-      setRecoveryMessage("Error registering recovery");
+      setRecoveryMessage("Could not register recovery. Check user ID and required fields.");
     }
   }
 
