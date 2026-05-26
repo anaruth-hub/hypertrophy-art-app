@@ -39,6 +39,16 @@ function WellnessForm() {
       const wellness = await response.json();
 
       setWellnessMessage(`Wellness registered: ${wellness.emotionalState}`);
+      setWellnessForm({
+        userId: "",
+        date: "",
+        physicalState: "MEDIUM",
+        mentalState: "MEDIUM",
+        emotionalState: "MEDIUM",
+        stressLevel: "MEDIUM",
+        motivationLevel: "MEDIUM",
+        notes: "",
+      });
     } catch (error) {
       setWellnessMessage("Error registering wellness");
     }

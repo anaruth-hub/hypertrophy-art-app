@@ -40,6 +40,14 @@ function TrainingForm() {
       const training = await response.json();
 
       setTrainingMessage(`Training registered: ${training.muscleGroup}`);
+      setTrainingForm({
+        userId: "",
+        date: "",
+        muscleGroup: "",
+        exercises: "",
+        intensity: "MEDIUM",
+        durationMinutes: 60,
+      });
     } catch (error) {
       setTrainingMessage("Error registering training");
     }

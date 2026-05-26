@@ -48,6 +48,16 @@ function NutritionForm() {
       const nutrition = await response.json();
 
       setNutritionMessage(`Nutrition registered: ${nutrition.calories} kcal`);
+      setNutritionForm({
+        userId: "",
+        date: "",
+        calories: "",
+        proteinGrams: "",
+        carbsGrams: "",
+        fatGrams: "",
+        hydrationLiters: "",
+        notes: "",
+      });
     } catch (error) {
       setNutritionMessage("Error registering nutrition");
     }
