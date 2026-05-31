@@ -285,3 +285,19 @@ textarea {
   text-align: center;
   line-height: 1.5;
 }
+
+.field-group {
+  display: grid;
+  gap: 6px;
+}
+
+.field-group span {
+  color: #f8fafc;
+  font-weight: 800;
+}
+
+.field-group small {
+  color: #94a3b8;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
