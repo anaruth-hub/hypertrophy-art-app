@@ -21,6 +21,7 @@ public class CreateUserService implements CreateUserUseCase {
         User user = User.create(
                 command.name(),
                 command.email(),
+                "{legacy-password-hash}",
                 command.mode()
         );
 

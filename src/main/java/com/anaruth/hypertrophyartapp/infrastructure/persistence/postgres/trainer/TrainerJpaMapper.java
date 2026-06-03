@@ -11,7 +11,9 @@ public class TrainerJpaMapper {
         return new TrainerEntity(
                 trainer.id().value().toString(),
                 trainer.name(),
-                trainer.email()
+                trainer.email(),
+                trainer.passwordHash(),
+                trainer.role()
         );
     }
 
@@ -19,7 +21,9 @@ public class TrainerJpaMapper {
         return Trainer.restore(
                 TrainerId.from(UUID.fromString(entity.getId())),
                 entity.getName(),
-                entity.getEmail()
+                entity.getEmail(),
+                entity.getPasswordHash(),
+                entity.getRole()
         );
     }
 }
