@@ -10,4 +10,5 @@ public interface TrainerRepository {
     Trainer save(Trainer trainer);
 
     Optional<Trainer> findById(TrainerId trainerId);
+    Optional<Trainer> findByEmail(String email);
 }

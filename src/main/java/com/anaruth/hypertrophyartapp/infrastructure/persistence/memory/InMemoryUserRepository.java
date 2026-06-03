@@ -24,5 +24,14 @@ public class InMemoryUserRepository implements UserRepository {
     @Override
     public Optional<User> findById(UserId userId) {
         return Optional.ofNullable(users.get(userId.value()));
+
+    }
+
+    @Override
+    public Optional<User> findByEmail(String email) {
+        return users.values()
+                .stream()
+                .filter(user -> user.email().equalsIgnoreCase(email))
+                .findFirst();
     }
 }

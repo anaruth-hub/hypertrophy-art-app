@@ -31,4 +31,11 @@ public class PostgresUserPersistenceAdapter implements UserRepository {
         return springDataUserJpaRepository.findById(userId.value().toString())
                 .map(userJpaMapper::toDomain);
     }
+
+    @Override
+    public Optional<User> findByEmail(String email) {
+        return springDataUserJpaRepository.findByEmail(email)
+                .map(userJpaMapper::toDomain);
+
+    }
 }
