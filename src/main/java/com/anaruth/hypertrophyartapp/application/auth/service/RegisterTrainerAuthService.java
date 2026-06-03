@@ -13,13 +13,16 @@ public class RegisterTrainerAuthService implements RegisterTrainerAuthUseCase {
 
     private final TrainerRepository trainerRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
     public RegisterTrainerAuthService(
             TrainerRepository trainerRepository,
-            PasswordEncoder passwordEncoder
+            PasswordEncoder passwordEncoder,
+            JwtService jwtService
     ) {
         this.trainerRepository = trainerRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
     }
 
     @Override
@@ -39,8 +42,14 @@ public class RegisterTrainerAuthService implements RegisterTrainerAuthUseCase {
 
         Trainer savedTrainer = trainerRepository.save(trainer);
 
+        String token = jwtService.generateToken(
+                savedTrainer.id().value(),
+                savedTrainer.email(),
+                savedTrainer.role()
+        );
+
         return new AuthResult(
-                "TEMP_TOKEN",
+                token,
                 savedTrainer.role(),
                 savedTrainer.id().value(),
                 savedTrainer.name(),

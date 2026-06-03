@@ -13,13 +13,17 @@ public class RegisterUserAuthService implements RegisterUserAuthUseCase {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
     public RegisterUserAuthService(
             UserRepository userRepository,
-            PasswordEncoder passwordEncoder
+            PasswordEncoder passwordEncoder,
+            JwtService jwtService
     ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
+
     }
 
     @Override
@@ -40,8 +44,14 @@ public class RegisterUserAuthService implements RegisterUserAuthUseCase {
 
         User savedUser = userRepository.save(user);
 
+        String token = jwtService.generateToken(
+                savedUser.id().value(),
+                savedUser.email(),
+                savedUser.role()
+        );
+
         return new AuthResult(
-                "TEMP_TOKEN",
+                token,
                 savedUser.role(),
                 savedUser.id().value(),
                 savedUser.name(),
