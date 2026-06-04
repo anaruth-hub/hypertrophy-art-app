@@ -12,7 +12,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-
+import com.anaruth.hypertrophyartapp.application.user.port.in.GetCurrentUserProfileUseCase;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -35,6 +35,9 @@ class UserControllerTest {
 
     @MockitoBean
     private AssignTrainerToUserUseCase assignTrainerToUserUseCase;
+
+    @MockitoBean
+    private GetCurrentUserProfileUseCase getCurrentUserProfileUseCase;
 
     @Test
     void shouldCreateUser() throws Exception {
