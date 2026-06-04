@@ -1,6 +1,8 @@
 package com.anaruth.hypertrophyartapp.infrastructure.controller.auth;
 
 import com.anaruth.hypertrophyartapp.application.auth.port.in.AuthResult;
+import com.anaruth.hypertrophyartapp.application.auth.port.in.LoginCommand;
+import com.anaruth.hypertrophyartapp.application.auth.port.in.LoginUseCase;
 import com.anaruth.hypertrophyartapp.application.auth.port.in.RegisterTrainerAuthCommand;
 import com.anaruth.hypertrophyartapp.application.auth.port.in.RegisterTrainerAuthUseCase;
 import com.anaruth.hypertrophyartapp.application.auth.port.in.RegisterUserAuthCommand;
@@ -17,13 +19,18 @@ public class AuthController {
 
     private final RegisterUserAuthUseCase registerUserAuthUseCase;
     private final RegisterTrainerAuthUseCase registerTrainerAuthUseCase;
+    private final LoginUseCase loginUseCase;
 
     public AuthController(
             RegisterUserAuthUseCase registerUserAuthUseCase,
-            RegisterTrainerAuthUseCase registerTrainerAuthUseCase
+            RegisterTrainerAuthUseCase registerTrainerAuthUseCase,
+            LoginUseCase loginUseCase
+
     ) {
         this.registerUserAuthUseCase = registerUserAuthUseCase;
         this.registerTrainerAuthUseCase = registerTrainerAuthUseCase;
+        this.loginUseCase = loginUseCase;
+
     }
 
     @PostMapping("/register-user")
@@ -49,6 +56,19 @@ public class AuthController {
         AuthResult result = registerTrainerAuthUseCase.registerTrainer(
                 new RegisterTrainerAuthCommand(
                         request.name(),
+                        request.email(),
+                        request.password()
+                )
+        );
+
+        return toResponse(result);
+    }
+
+    @PostMapping("/login")
+    @Operation(summary = "Login user or trainer")
+    public AuthResponse login(@RequestBody LoginRequest request) {
+        AuthResult result = loginUseCase.login(
+                new LoginCommand(
                         request.email(),
                         request.password()
                 )
