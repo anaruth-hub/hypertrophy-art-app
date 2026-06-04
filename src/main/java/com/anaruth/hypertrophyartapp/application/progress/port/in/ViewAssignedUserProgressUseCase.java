@@ -4,5 +4,7 @@ import java.util.UUID;
 
 public interface ViewAssignedUserProgressUseCase {
 
-    ProgressSummaryResult viewAssignedUserProgress(UUID trainerId, UUID userId);
+    ProgressSummaryResult viewAssignedUserProgress(
+            UUID trainerId, UUID userId
+    );
 }
