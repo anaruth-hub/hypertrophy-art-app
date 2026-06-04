@@ -1,13 +1,8 @@
 package com.anaruth.hypertrophyartapp.infrastructure.persistence.postgres.user;
 
-import com.anaruth.hypertrophyartapp.infrastructure.persistence.postgres.trainer.TrainerEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import com.anaruth.hypertrophyartapp.domain.auth.model.Role;
+import com.anaruth.hypertrophyartapp.domain.user.model.UserMode;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "users")
@@ -20,12 +15,15 @@ public class UserEntity {
 
     private String email;
 
-    @Enumerated(EnumType.STRING)
-    private UserModeEntity mode;
+    private String passwordHash;
 
-    @ManyToOne
-    @JoinColumn(name = "trainer_id")
-    private TrainerEntity trainer;
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
+    @Enumerated(EnumType.STRING)
+    private UserMode mode;
+
+    private String trainerId;
 
     protected UserEntity() {
     }
@@ -34,14 +32,18 @@ public class UserEntity {
             String id,
             String name,
             String email,
-            UserModeEntity mode,
-            TrainerEntity trainer
+            String passwordHash,
+            Role role,
+            UserMode mode,
+            String trainerId
     ) {
         this.id = id;
         this.name = name;
         this.email = email;
+        this.passwordHash = passwordHash;
+        this.role = role;
         this.mode = mode;
-        this.trainer = trainer;
+        this.trainerId = trainerId;
     }
 
     public String getId() {
@@ -56,11 +58,19 @@ public class UserEntity {
         return email;
     }
 
-    public UserModeEntity getMode() {
+    public String getPasswordHash() {
+        return passwordHash;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public UserMode getMode() {
         return mode;
     }
 
-    public TrainerEntity getTrainer() {
-        return trainer;
+    public String getTrainerId() {
+        return trainerId;
     }
 }

@@ -31,4 +31,10 @@ public class PostgresTrainerPersistenceAdapter implements TrainerRepository {
         return repository.findById(id.value().toString())
                 .map(mapper::toDomain);
     }
+
+    @Override
+    public Optional<Trainer> findByEmail(String email) {
+        return repository.findByEmail(email)
+                .map(mapper::toDomain);
+    }
 }

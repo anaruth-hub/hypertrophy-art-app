@@ -4,6 +4,7 @@ import com.anaruth.hypertrophyartapp.application.training.port.in.RegisterTraini
 import com.anaruth.hypertrophyartapp.application.training.port.in.RegisterTrainingResult;
 import com.anaruth.hypertrophyartapp.application.training.port.out.TrainingRepository;
 import com.anaruth.hypertrophyartapp.application.user.port.out.UserRepository;
+import com.anaruth.hypertrophyartapp.domain.auth.model.Role;
 import com.anaruth.hypertrophyartapp.domain.training.model.Training;
 import com.anaruth.hypertrophyartapp.domain.training.model.TrainingIntensity;
 import com.anaruth.hypertrophyartapp.domain.user.model.User;
@@ -44,6 +45,8 @@ class RegisterTrainingServiceTest {
                 userId,
                 "Ana",
                 "ana@test.com",
+                "{test-password-hash}",
+                Role.USER,
                 UserMode.SELF_MANAGED,
                 null
         );

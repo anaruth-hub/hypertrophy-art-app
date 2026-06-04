@@ -25,4 +25,12 @@ public class InMemoryTrainerRepository implements TrainerRepository {
     public Optional<Trainer> findById(TrainerId trainerId) {
         return Optional.ofNullable(trainers.get(trainerId.value()));
     }
+
+    @Override
+    public Optional<Trainer> findByEmail(String email) {
+        return trainers.values()
+                .stream()
+                .filter(trainer -> trainer.email().equalsIgnoreCase(email))
+                .findFirst();
+    }
 }

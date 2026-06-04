@@ -1,11 +1,13 @@
 package com.anaruth.hypertrophyartapp.infrastructure.persistence.postgres.user;
 
 import com.anaruth.hypertrophyartapp.application.user.port.out.UserRepository;
+import com.anaruth.hypertrophyartapp.domain.trainer.model.TrainerId;
 import com.anaruth.hypertrophyartapp.domain.user.model.User;
 import com.anaruth.hypertrophyartapp.domain.user.model.UserId;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -30,5 +32,20 @@ public class PostgresUserPersistenceAdapter implements UserRepository {
     public Optional<User> findById(UserId userId) {
         return springDataUserJpaRepository.findById(userId.value().toString())
                 .map(userJpaMapper::toDomain);
+    }
+
+    @Override
+    public Optional<User> findByEmail(String email) {
+        return springDataUserJpaRepository.findByEmail(email)
+                .map(userJpaMapper::toDomain);
+
+    }
+
+    @Override
+    public List<User> findByTrainerId(TrainerId trainerId) {
+        return springDataUserJpaRepository.findByTrainerId(trainerId.value().toString())
+                .stream()
+                .map(userJpaMapper::toDomain)
+                .toList();
     }
 }

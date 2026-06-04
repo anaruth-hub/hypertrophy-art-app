@@ -6,10 +6,15 @@ import com.anaruth.hypertrophyartapp.application.user.port.in.AssignTrainerToUse
 import com.anaruth.hypertrophyartapp.application.user.port.in.CreateUserCommand;
 import com.anaruth.hypertrophyartapp.application.user.port.in.CreateUserResult;
 import com.anaruth.hypertrophyartapp.application.user.port.in.CreateUserUseCase;
+import com.anaruth.hypertrophyartapp.application.user.port.in.CurrentUserProfileResult;
+import com.anaruth.hypertrophyartapp.application.user.port.in.GetCurrentUserProfileUseCase;
+import com.anaruth.hypertrophyartapp.infrastructure.security.AuthenticatedAccount;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,13 +31,16 @@ public class UserController {
 
     private final CreateUserUseCase createUserUseCase;
     private final AssignTrainerToUserUseCase assignTrainerToUserUseCase;
+    private final GetCurrentUserProfileUseCase getCurrentUserProfileUseCase;
 
     public UserController(
             CreateUserUseCase createUserUseCase,
-            AssignTrainerToUserUseCase assignTrainerToUserUseCase
+            AssignTrainerToUserUseCase assignTrainerToUserUseCase,
+            GetCurrentUserProfileUseCase getCurrentUserProfileUseCase
     ) {
         this.createUserUseCase = createUserUseCase;
         this.assignTrainerToUserUseCase = assignTrainerToUserUseCase;
+        this.getCurrentUserProfileUseCase = getCurrentUserProfileUseCase;
     }
 
     @PostMapping
@@ -70,6 +78,23 @@ public class UserController {
                 result.userName(),
                 result.mode(),
                 result.trainerId()
+        );
+    }
+
+    @GetMapping("/me")
+    @Operation(summary = "Get current authenticated user profile")
+    public CurrentUserProfileResponse getCurrentUserProfile(
+            @AuthenticationPrincipal AuthenticatedAccount account
+    ) {
+        CurrentUserProfileResult result =
+                getCurrentUserProfileUseCase.getCurrentUserProfile(account.id());
+
+        return new CurrentUserProfileResponse(
+                result.id(),
+                result.name(),
+                result.email(),
+                result.role(),
+                result.mode()
         );
     }
 }

@@ -18,7 +18,11 @@ public class CreateTrainerService implements CreateTrainerUseCase {
 
     @Override
     public CreateTrainerResult createTrainer(CreateTrainerCommand command) {
-        Trainer trainer = Trainer.create(command.name(), command.email());
+        Trainer trainer = Trainer.create(
+                command.name(),
+                command.email(),
+                "{legacy-password-hash}"
+                );
 
         Trainer savedTrainer = trainerRepository.save(trainer);
 

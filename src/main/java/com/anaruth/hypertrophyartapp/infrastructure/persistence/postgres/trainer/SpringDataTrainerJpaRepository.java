@@ -2,6 +2,10 @@ package com.anaruth.hypertrophyartapp.infrastructure.persistence.postgres.traine
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Optional;
+
 public interface SpringDataTrainerJpaRepository
         extends JpaRepository<TrainerEntity, String> {
+
+    Optional<TrainerEntity> findByEmail(String email);
 }

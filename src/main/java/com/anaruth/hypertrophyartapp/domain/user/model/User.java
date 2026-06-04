@@ -1,5 +1,6 @@
 package com.anaruth.hypertrophyartapp.domain.user.model;
 
+import com.anaruth.hypertrophyartapp.domain.auth.model.Role;
 import com.anaruth.hypertrophyartapp.domain.trainer.model.TrainerId;
 
 import java.util.Objects;
@@ -9,22 +10,34 @@ public class User {
     private final UserId id;
     private final String name;
     private final String email;
+    private final String passwordHash;
+    private final Role role;
     private final UserMode mode;
     private TrainerId trainerId;
 
-    private User(UserId id, String name, String email, UserMode mode) {
+    private User(UserId id, String name, String email, String passwordHash, Role role, UserMode mode) {
         this.id = Objects.requireNonNull(id, "User id cannot be null");
         this.name = validateName(name);
         this.email = validateEmail(email);
+        this.passwordHash = validatePasswordHash(passwordHash);
+        this.role = Objects.requireNonNull(role, "User role cannot be null");
         this.mode = Objects.requireNonNull(mode, "User mode cannot be null");
     }
 
-    public static User create(String name, String email, UserMode mode) {
-        return new User(UserId.newId(), name, email, mode);
+    public static User create(String name, String email, String passwordHash, UserMode mode) {
+        return new User(UserId.newId(), name, email, passwordHash, Role.USER, mode);
     }
 
-    public static User restore(UserId id, String name, String email, UserMode mode, TrainerId trainerId) {
-        User user = new User(id, name, email, mode);
+    public static User restore(
+            UserId id,
+            String name,
+            String email,
+            String passwordHash,
+            Role role,
+            UserMode mode,
+            TrainerId trainerId
+    ) {
+        User user = new User(id, name, email, passwordHash, role, mode);
         user.trainerId = trainerId;
         return user;
     }
@@ -39,6 +52,14 @@ public class User {
 
     public String email() {
         return email;
+    }
+
+    public String passwordHash() {
+        return passwordHash;
+    }
+
+    public Role role() {
+        return role;
     }
 
     public UserMode mode() {
@@ -68,5 +89,12 @@ public class User {
             throw new IllegalArgumentException("User email cannot be blank");
         }
         return email.trim().toLowerCase();
+    }
+
+    private String validatePasswordHash(String passwordHash) {
+        if (passwordHash == null || passwordHash.isBlank()) {
+            throw new IllegalArgumentException("User password hash cannot be blank");
+        }
+        return passwordHash;
     }
 }

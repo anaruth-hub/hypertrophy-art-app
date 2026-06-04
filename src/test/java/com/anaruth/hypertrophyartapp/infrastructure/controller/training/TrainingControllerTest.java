@@ -1,10 +1,12 @@
 package com.anaruth.hypertrophyartapp.infrastructure.controller.training;
 
+import com.anaruth.hypertrophyartapp.application.auth.service.JwtService;
 import com.anaruth.hypertrophyartapp.application.training.port.in.RegisterTrainingResult;
 import com.anaruth.hypertrophyartapp.application.training.port.in.RegisterTrainingUseCase;
 import com.anaruth.hypertrophyartapp.domain.training.model.TrainingIntensity;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -19,10 +21,14 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(TrainingController.class)
+@AutoConfigureMockMvc(addFilters = false)
 class TrainingControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @MockitoBean
+    private JwtService jwtService;
 
     @MockitoBean
     private RegisterTrainingUseCase registerTrainingUseCase;
