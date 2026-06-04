@@ -1,5 +1,6 @@
 package com.anaruth.hypertrophyartapp.infrastructure.controller.user;
 
+import com.anaruth.hypertrophyartapp.application.auth.service.JwtService;
 import com.anaruth.hypertrophyartapp.application.user.port.in.CreateUserResult;
 import com.anaruth.hypertrophyartapp.application.user.port.in.CreateUserUseCase;
 import com.anaruth.hypertrophyartapp.application.user.port.in.AssignTrainerToUserUseCase;
@@ -25,6 +26,9 @@ class UserControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @MockitoBean
+    private JwtService jwtService;
 
     @MockitoBean
     private CreateUserUseCase createUserUseCase;

@@ -1,5 +1,6 @@
 package com.anaruth.hypertrophyartapp.infrastructure.controller.training;
 
+import com.anaruth.hypertrophyartapp.application.auth.service.JwtService;
 import com.anaruth.hypertrophyartapp.application.training.port.in.RegisterTrainingResult;
 import com.anaruth.hypertrophyartapp.application.training.port.in.RegisterTrainingUseCase;
 import com.anaruth.hypertrophyartapp.domain.training.model.TrainingIntensity;
@@ -25,6 +26,9 @@ class TrainingControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @MockitoBean
+    private JwtService jwtService;
 
     @MockitoBean
     private RegisterTrainingUseCase registerTrainingUseCase;

@@ -1,5 +1,6 @@
 package com.anaruth.hypertrophyartapp.infrastructure.controller.trainer;
 
+import com.anaruth.hypertrophyartapp.application.auth.service.JwtService;
 import com.anaruth.hypertrophyartapp.application.trainer.port.in.CreateTrainerResult;
 import com.anaruth.hypertrophyartapp.application.trainer.port.in.CreateTrainerUseCase;
 import org.junit.jupiter.api.Test;
@@ -23,6 +24,9 @@ class TrainerControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @MockitoBean
+    private JwtService jwtService;
 
     @MockitoBean
     private CreateTrainerUseCase createTrainerUseCase;
