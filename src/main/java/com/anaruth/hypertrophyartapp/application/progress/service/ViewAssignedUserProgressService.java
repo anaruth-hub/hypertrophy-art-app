@@ -26,20 +26,18 @@ public class ViewAssignedUserProgressService implements ViewAssignedUserProgress
     }
 
     @Override
-    public ProgressSummaryResult viewAssignedUserProgress(UUID trainerUuid, UUID userUuid) {
-        User user = userRepository.findById(UserId.from(userUuid))
+    public ProgressSummaryResult viewAssignedUserProgress(
+            UUID authenticatedTrainerId,
+            UUID userId
+    ) {
+        User user = userRepository.findById(UserId.from(userId))
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        TrainerId assignedTrainerId = user.trainerId();
-
-        if (assignedTrainerId == null) {
-            throw new IllegalStateException("User is not assigned to a trainer");
+        if (user.trainerId() == null ||
+                !user.trainerId().equals(TrainerId.from(authenticatedTrainerId))) {
+            throw new IllegalArgumentException("User is not assigned to this trainer");
         }
 
-        if (!assignedTrainerId.value().equals(trainerUuid)) {
-            throw new IllegalStateException("Trainer is not assigned to this user");
-        }
-
-        return viewProgressSummaryUseCase.viewByUserId(userUuid);
+        return viewProgressSummaryUseCase.viewByUserId(userId);
     }
 }

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import com.anaruth.hypertrophyartapp.application.progress.port.in.ViewMyProgressSummaryUseCase;
 import com.anaruth.hypertrophyartapp.infrastructure.security.AuthenticatedAccount;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.UUID;
 
@@ -93,5 +94,29 @@ public class ProgressSummaryController {
                 result.latestWellnessMotivation()
         );
     }
+    @GetMapping("/trainers/me/users/{userId}/progress")
+    @Operation(summary = "Authenticated trainer views assigned user progress")
+    public ProgressSummaryResponse viewAssignedUserProgressAsAuthenticatedTrainer(
+            @AuthenticationPrincipal AuthenticatedAccount account,
+            @PathVariable UUID userId
+    ) {
+        ProgressSummaryResult result =
+                viewAssignedUserProgressUseCase.viewAssignedUserProgress(
+                        account.id(),
+                        userId
+                );
 
+        return new ProgressSummaryResponse(
+                result.userId(),
+                result.totalTrainings(),
+                result.latestTrainingDate(),
+                result.latestTrainingMuscleGroup(),
+                result.latestRecoveryFatigue(),
+                result.latestRecoverySleepHours(),
+                result.latestNutritionCalories(),
+                result.latestNutritionProteinGrams(),
+                result.latestWellnessStress(),
+                result.latestWellnessMotivation()
+        );
+    }
 }
