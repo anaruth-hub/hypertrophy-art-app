@@ -1,6 +1,7 @@
 package com.anaruth.hypertrophyartapp.application.auth.service;
 
 import com.anaruth.hypertrophyartapp.domain.auth.model.Role;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Service;
@@ -34,5 +35,31 @@ public class JwtService {
                 .expiration(expiration)
                 .signWith(key)
                 .compact();
+    }
+
+    public String extractEmail(String token) {
+        return extractClaims(token).getSubject();
+    }
+
+    public UUID extractId(String token) {
+        String id = extractClaims(token).get("id", String.class);
+        return UUID.fromString(id);
+    }
+
+    public Role extractRole(String token) {
+        String role = extractClaims(token).get("role", String.class);
+        return Role.valueOf(role);
+    }
+
+    public boolean isTokenValid(String token) {
+        return extractClaims(token).getExpiration().after(new Date());
+    }
+
+    private Claims extractClaims(String token) {
+        return Jwts.parser()
+                .verifyWith(key)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
     }
 }
