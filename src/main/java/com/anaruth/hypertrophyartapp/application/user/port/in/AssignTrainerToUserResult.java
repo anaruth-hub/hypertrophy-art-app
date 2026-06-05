@@ -1,0 +1,13 @@
+package com.anaruth.hypertrophyartapp.application.user.port.in;
+
+import com.anaruth.hypertrophyartapp.domain.user.model.UserMode;
+
+import java.util.UUID;
+
+public record AssignTrainerToUserResult(
+        UUID userId,
+        String userName,
+        UserMode mode,
+        UUID trainerId
+) {
+}
