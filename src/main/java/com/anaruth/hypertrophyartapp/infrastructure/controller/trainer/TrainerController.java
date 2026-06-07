@@ -4,6 +4,7 @@ import com.anaruth.hypertrophyartapp.application.trainer.port.in.CreateTrainerCo
 import com.anaruth.hypertrophyartapp.application.trainer.port.in.CreateTrainerResult;
 import com.anaruth.hypertrophyartapp.application.trainer.port.in.CreateTrainerUseCase;
 import com.anaruth.hypertrophyartapp.application.trainer.port.in.SupervisedUserResult;
+import com.anaruth.hypertrophyartapp.application.trainer.port.in.ViewAllTrainersUseCase;
 import com.anaruth.hypertrophyartapp.application.trainer.port.in.ViewMySupervisedUsersUseCase;
 import com.anaruth.hypertrophyartapp.infrastructure.security.AuthenticatedAccount;
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,13 +28,29 @@ public class TrainerController {
 
     private final CreateTrainerUseCase createTrainerUseCase;
     private final ViewMySupervisedUsersUseCase viewMySupervisedUsersUseCase;
+    private final ViewAllTrainersUseCase viewAllTrainersUseCase;
 
     public TrainerController(
             CreateTrainerUseCase createTrainerUseCase,
-            ViewMySupervisedUsersUseCase viewMySupervisedUsersUseCase
+            ViewMySupervisedUsersUseCase viewMySupervisedUsersUseCase,
+            ViewAllTrainersUseCase viewAllTrainersUseCase
     ) {
         this.createTrainerUseCase = createTrainerUseCase;
         this.viewMySupervisedUsersUseCase = viewMySupervisedUsersUseCase;
+        this.viewAllTrainersUseCase = viewAllTrainersUseCase;
+    }
+
+    @GetMapping
+    @Operation(summary = "View all trainers")
+    public List<TrainerResponse> viewAllTrainers() {
+        return viewAllTrainersUseCase.viewAll()
+                .stream()
+                .map(result -> new TrainerResponse(
+                        result.id(),
+                        result.name(),
+                        result.email()
+                ))
+                .toList();
     }
 
     @PostMapping

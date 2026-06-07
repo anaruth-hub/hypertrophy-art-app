@@ -4,6 +4,7 @@ import com.anaruth.hypertrophyartapp.application.auth.service.JwtService;
 import com.anaruth.hypertrophyartapp.application.trainer.port.in.CreateTrainerResult;
 import com.anaruth.hypertrophyartapp.application.trainer.port.in.CreateTrainerUseCase;
 import com.anaruth.hypertrophyartapp.application.trainer.port.in.ViewMySupervisedUsersUseCase;
+import com.anaruth.hypertrophyartapp.application.trainer.port.in.ViewAllTrainersUseCase;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -34,6 +35,9 @@ class TrainerControllerTest {
 
     @MockitoBean
     private ViewMySupervisedUsersUseCase viewMySupervisedUsersUseCase;
+
+    @MockitoBean
+    private ViewAllTrainersUseCase viewAllTrainersUseCase;
 
     @Test
     void shouldCreateTrainer() throws Exception {

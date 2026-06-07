@@ -1,9 +1,11 @@
 import { useState } from "react";
-import { API_BASE_URL } from "../../services/api";
+import { apiFetch, getStoredAuth } from "../../services/api";
 
 function TrainingForm() {
+  const storedAuth = getStoredAuth();
+
   const [trainingForm, setTrainingForm] = useState({
-    userId: "",
+    userId: storedAuth?.id || "",
     date: "",
     muscleGroup: "",
     exercises: "",
@@ -22,27 +24,20 @@ function TrainingForm() {
     event.preventDefault();
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/trainings`, {
+      const training = await apiFetch("/api/trainings", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: JSON.stringify({
           ...trainingForm,
           durationMinutes: Number(trainingForm.durationMinutes),
         }),
       });
 
-      if (!response.ok) {
-        throw new Error("Could not register training");
-      }
-
-      const training = await response.json();
-
-      setTrainingMessage(`Training registered successfully: ${training.muscleGroup}`);
+      setTrainingMessage(
+        `Training registered successfully: ${training.muscleGroup}`
+      );
 
       setTrainingForm({
-        userId: "",
+        userId: storedAuth?.id || "",
         date: "",
         muscleGroup: "",
         exercises: "",
@@ -50,7 +45,9 @@ function TrainingForm() {
         durationMinutes: 60,
       });
     } catch (error) {
-      setTrainingMessage("Could not register training. Check user ID and required fields.");
+      setTrainingMessage(
+        "Could not register training. Check required fields and active session."
+      );
     }
   }
 
@@ -59,14 +56,14 @@ function TrainingForm() {
       <h2>Register training</h2>
 
       <p className="form-helper">
-        Use a generated User ID before registering training data.
+        This training will be linked to the logged-in user.
       </p>
 
       <input
         name="userId"
-        placeholder="Paste here the generated User ID"
         value={trainingForm.userId}
         onChange={handleTrainingChange}
+        readOnly
         required
       />
 

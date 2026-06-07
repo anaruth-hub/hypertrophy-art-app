@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
+import java.util.List;
 
 @Repository
 @Primary
@@ -36,5 +37,13 @@ public class PostgresTrainerPersistenceAdapter implements TrainerRepository {
     public Optional<Trainer> findByEmail(String email) {
         return repository.findByEmail(email)
                 .map(mapper::toDomain);
+    }
+
+    @Override
+    public List<Trainer> findAll() {
+        return repository.findAll()
+                .stream()
+                .map(mapper::toDomain)
+                .toList();
     }
 }
