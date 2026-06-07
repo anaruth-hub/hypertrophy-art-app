@@ -1,9 +1,11 @@
 import { useState } from "react";
-import { API_BASE_URL } from "../../services/api";
+import { apiFetch, getStoredAuth } from "../../services/api";
 
 function NutritionForm() {
+  const storedAuth = getStoredAuth();
+
   const [nutritionForm, setNutritionForm] = useState({
-    userId: "",
+    userId: storedAuth?.id || "",
     date: "",
     calories: "",
     proteinGrams: "",
@@ -24,11 +26,8 @@ function NutritionForm() {
     event.preventDefault();
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/nutrition-entries`, {
+      const nutrition = await apiFetch("/api/nutrition-entries", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: JSON.stringify({
           userId: nutritionForm.userId,
           date: nutritionForm.date,
@@ -41,16 +40,12 @@ function NutritionForm() {
         }),
       });
 
-      if (!response.ok) {
-        throw new Error("Could not register nutrition");
-      }
-
-      const nutrition = await response.json();
-
-      setNutritionMessage(`Nutrition registered successfully: ${nutrition.calories} kcal`);
+      setNutritionMessage(
+        `Nutrition registered successfully: ${nutrition.calories} kcal`
+      );
 
       setNutritionForm({
-        userId: "",
+        userId: storedAuth?.id || "",
         date: "",
         calories: "",
         proteinGrams: "",
@@ -60,7 +55,9 @@ function NutritionForm() {
         notes: "",
       });
     } catch (error) {
-      setNutritionMessage("Could not register nutrition. Check user ID and required fields.");
+      setNutritionMessage(
+        "Could not register nutrition. Check required fields and active session."
+      );
     }
   }
 
@@ -69,14 +66,14 @@ function NutritionForm() {
       <h2>Nutrition macros</h2>
 
       <p className="form-helper">
-        Use a generated User ID to connect nutrition data to a profile.
+        Nutrition data will be linked to the logged-in user.
       </p>
 
       <input
         name="userId"
-        placeholder="Paste here the generated User ID"
         value={nutritionForm.userId}
         onChange={handleNutritionChange}
+        readOnly
         required
       />
 
