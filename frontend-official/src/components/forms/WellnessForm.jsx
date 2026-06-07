@@ -1,9 +1,11 @@
 import { useState } from "react";
-import { API_BASE_URL } from "../../services/api";
+import { apiFetch, getStoredAuth } from "../../services/api";
 
 function WellnessForm() {
+  const storedAuth = getStoredAuth();
+
   const [wellnessForm, setWellnessForm] = useState({
-    userId: "",
+    userId: storedAuth?.id || "",
     date: "",
     physicalState: "MEDIUM",
     mentalState: "MEDIUM",
@@ -24,24 +26,17 @@ function WellnessForm() {
     event.preventDefault();
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/wellness-checkins`, {
+      const wellness = await apiFetch("/api/wellness-checkins", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: JSON.stringify(wellnessForm),
       });
 
-      if (!response.ok) {
-        throw new Error("Could not register wellness");
-      }
-
-      const wellness = await response.json();
-
-      setWellnessMessage(`Wellness registered successfully: ${wellness.emotionalState}`);
+      setWellnessMessage(
+        `Wellness registered successfully: ${wellness.emotionalState}`
+      );
 
       setWellnessForm({
-        userId: "",
+        userId: storedAuth?.id || "",
         date: "",
         physicalState: "MEDIUM",
         mentalState: "MEDIUM",
@@ -51,7 +46,9 @@ function WellnessForm() {
         notes: "",
       });
     } catch (error) {
-      setWellnessMessage("Could not register wellness. Check user ID and required fields.");
+      setWellnessMessage(
+        "Could not register wellness. Check required fields and active session."
+      );
     }
   }
 
@@ -60,14 +57,14 @@ function WellnessForm() {
       <h2>Wellness check-in</h2>
 
       <p className="form-helper">
-        Use a generated User ID to connect wellness data to a profile.
+        Wellness data will be linked to the logged-in user.
       </p>
 
       <input
         name="userId"
-        placeholder="Paste here the generated User ID"
         value={wellnessForm.userId}
         onChange={handleWellnessChange}
+        readOnly
         required
       />
 
