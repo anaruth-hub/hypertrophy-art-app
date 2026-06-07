@@ -5,6 +5,7 @@ import com.anaruth.hypertrophyartapp.domain.trainer.model.Trainer;
 import com.anaruth.hypertrophyartapp.domain.trainer.model.TrainerId;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -32,5 +33,12 @@ public class InMemoryTrainerRepository implements TrainerRepository {
                 .stream()
                 .filter(trainer -> trainer.email().equalsIgnoreCase(email))
                 .findFirst();
+    }
+
+    @Override
+    public List<Trainer> findAll() {
+        return trainers.values()
+                .stream()
+                .toList();
     }
 }

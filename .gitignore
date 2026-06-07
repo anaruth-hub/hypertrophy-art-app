@@ -32,6 +32,6 @@ build/
 ### VS Code ###
 .vscode/
 ### Frontend / Node ###
-frontend-experimental/node_modules/
-frontend-experimental/dist/
-frontend-experimental/.env
+frontend-official/node_modules/
+frontend-official/dist/
+frontend-official/.env

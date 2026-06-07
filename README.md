@@ -373,13 +373,14 @@ npm run dev
 Frontend:
 
 ```text
+http://localhost:5173 
 http://localhost:3000
 ```
 
 ---
 ## Frontend
 
-La carpeta `frontend` contiene la versión utilizada para la demostración y evaluación del proyecto.
+La carpeta `frontend-official` contiene la versión utilizada para la demostración y evaluación del proyecto.
 
 Otras versiones o prototipos de interfaz pueden mantenerse en carpetas separadas únicamente con fines de experimentación y aprendizaje.
 

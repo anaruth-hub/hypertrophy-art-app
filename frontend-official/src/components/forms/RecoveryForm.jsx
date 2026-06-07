@@ -1,9 +1,11 @@
 import { useState } from "react";
-import { API_BASE_URL } from "../../services/api";
+import { apiFetch, getStoredAuth } from "../../services/api";
 
 function RecoveryForm() {
+  const storedAuth = getStoredAuth();
+
   const [recoveryForm, setRecoveryForm] = useState({
-    userId: "",
+    userId: storedAuth?.id || "",
     date: "",
     fatigueLevel: "MEDIUM",
     sorenessLevel: "MEDIUM",
@@ -23,29 +25,20 @@ function RecoveryForm() {
     event.preventDefault();
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/recovery-checkins`, {
+      const recovery = await apiFetch("/api/recovery-checkins", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: JSON.stringify({
           ...recoveryForm,
           sleepHours: Number(recoveryForm.sleepHours),
         }),
       });
 
-      if (!response.ok) {
-        throw new Error("Could not register recovery");
-      }
-
-      const recovery = await response.json();
-
       setRecoveryMessage(
         `Recovery registered successfully: ${recovery.fatigueLevel}`
       );
 
       setRecoveryForm({
-        userId: "",
+        userId: storedAuth?.id || "",
         date: "",
         fatigueLevel: "MEDIUM",
         sorenessLevel: "MEDIUM",
@@ -65,16 +58,16 @@ function RecoveryForm() {
       <h2>Recovery check-in</h2>
 
       <p className="form-helper">
-        Use a generated User ID to connect recovery data to a profile.
+        Recovery data will be linked to the logged-in user.
       </p>
 
       <label className="field-group">
         <span>User ID</span>
         <input
           name="userId"
-          placeholder="Paste here the generated User ID"
           value={recoveryForm.userId}
           onChange={handleRecoveryChange}
+          readOnly
           required
         />
       </label>
