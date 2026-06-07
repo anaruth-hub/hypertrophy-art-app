@@ -1,17 +1,31 @@
-import { useState } from "react";
-import { API_BASE_URL } from "../../services/api";
+import { useEffect, useState } from "react";
+import { apiFetch, getStoredAuth } from "../../services/api";
 
 function AssignmentForm() {
+  const storedAuth = getStoredAuth();
 
+  const [trainers, setTrainers] = useState([]);
   const [assignmentForm, setAssignmentForm] = useState({
-    userId: "",
+    userId: storedAuth?.role === "USER" ? storedAuth.id : "",
     trainerId: "",
   });
 
   const [assignmentMessage, setAssignmentMessage] = useState("");
 
-  function handleAssignmentChange(event) {
+  useEffect(() => {
+    async function loadTrainers() {
+      try {
+        const data = await apiFetch("/api/trainers");
+        setTrainers(data);
+      } catch (error) {
+        setAssignmentMessage("Could not load trainers.");
+      }
+    }
 
+    loadTrainers();
+  }, []);
+
+  function handleAssignmentChange(event) {
     const { name, value } = event.target;
 
     setAssignmentForm({
@@ -21,80 +35,66 @@ function AssignmentForm() {
   }
 
   async function handleAssignmentSubmit(event) {
-
     event.preventDefault();
 
     try {
-
-      const response = await fetch(
-        `${API_BASE_URL}/api/users/${assignmentForm.userId}/assign-trainer/${assignmentForm.trainerId}`,
+      const result = await apiFetch(
+        `/api/users/${assignmentForm.userId}/assign-trainer/${assignmentForm.trainerId}`,
         {
           method: "POST",
         }
       );
 
-      if (!response.ok) {
-        throw new Error("Could not assign trainer");
-      }
-
-      const result = await response.json();
-
       setAssignmentMessage(
         `Trainer assigned successfully to ${result.userName}`
       );
-
-      setAssignmentForm({
-        userId: "",
-        trainerId: "",
-      });
-
     } catch (error) {
-
       setAssignmentMessage(
-        "Could not assign trainer. Check user mode and IDs."
+        "Could not assign trainer. Check user mode and selected trainer."
       );
     }
   }
 
   return (
-
-    <form
-      className="form-card"
-      onSubmit={handleAssignmentSubmit}
-    >
-
+    <form className="form-card" onSubmit={handleAssignmentSubmit}>
       <h2>Assign trainer</h2>
 
       <p className="form-helper">
-        Use the IDs generated in the Users and Trainers tabs.
+        Select a trainer from the list.
       </p>
 
-      <input
-        name="userId"
-        placeholder="Paste here the generated User ID"
-        value={assignmentForm.userId}
-        onChange={handleAssignmentChange}
-        required
-      />
+      <label className="field-group">
+        <span>User ID</span>
+        <input
+          name="userId"
+          value={assignmentForm.userId}
+          onChange={handleAssignmentChange}
+          readOnly={storedAuth?.role === "USER"}
+          required
+        />
+      </label>
 
-      <input
-        name="trainerId"
-        placeholder="Paste here the generated Trainer ID"
-        value={assignmentForm.trainerId}
-        onChange={handleAssignmentChange}
-        required
-      />
+      <label className="field-group">
+        <span>Trainer</span>
+        <select
+          name="trainerId"
+          value={assignmentForm.trainerId}
+          onChange={handleAssignmentChange}
+          required
+        >
+          <option value="">Select trainer</option>
 
-      <button type="submit">
-        Assign trainer
-      </button>
+          {trainers.map((trainer) => (
+            <option key={trainer.id} value={trainer.id}>
+              {trainer.name} - {trainer.email}
+            </option>
+          ))}
+        </select>
+      </label>
 
-      {assignmentMessage && (
-        <p className="message">
-          {assignmentMessage}
-        </p>
-      )}
+      <button type="submit">Assign trainer</button>
 
+      {assignmentMessage && <p className="message">{assignmentMessage}</p>}
     </form>
   );
 }
