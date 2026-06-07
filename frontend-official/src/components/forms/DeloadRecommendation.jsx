@@ -1,71 +1,63 @@
 import { useState } from "react";
-import { API_BASE_URL } from "../../services/api";
+import { apiFetch } from "../../services/api";
 
 function DeloadRecommendation() {
-  const [userId, setUserId] = useState("");
-  const [recommendation, setRecommendation] = useState(null);
+  const [recommendations, setRecommendations] = useState([]);
   const [message, setMessage] = useState("");
 
-  async function handleSubmit(event) {
-    event.preventDefault();
-
+  async function loadRecommendations() {
     try {
-      const response = await fetch(
-        `${API_BASE_URL}/api/recommendations/deload/${userId}`
-      );
+      const data = await apiFetch("/api/recommendations/me");
 
-      if (!response.ok) {
-        throw new Error("Could not load recommendation");
-      }
-
-      const data = await response.json();
-
-      setRecommendation(data);
+      setRecommendations(data);
       setMessage("");
     } catch (error) {
-      setRecommendation(null);
-      setMessage("Could not load recommendation. Check the user ID.");
+      setRecommendations([]);
+      setMessage(
+        "Could not load recommendations. Check your session."
+      );
     }
   }
 
   return (
     <section className="form-card">
-      <h2>Deload recommendation</h2>
+      <h2>My recommendations</h2>
 
       <p className="form-helper">
-        Paste a User ID to receive a basic fatigue and deload recommendation.
+        Recommendations received from your trainer.
       </p>
 
-      <form onSubmit={handleSubmit} className="summary-search">
-        <input
-          name="userId"
-          placeholder="Paste here the generated User ID"
-          value={userId}
-          onChange={(event) => setUserId(event.target.value)}
-          required
-        />
+      <button
+        type="button"
+        onClick={loadRecommendations}
+      >
+        Load recommendations
+      </button>
 
-        <button type="submit">View recommendation</button>
-      </form>
+      {message && (
+        <p className="message">
+          {message}
+        </p>
+      )}
 
-      {message && <p className="message">{message}</p>}
-
-      {recommendation && (
+      {recommendations.length > 0 && (
         <div className="summary-list">
-          <p>
-            <span>User ID</span>
-            <strong>{recommendation.userId}</strong>
-          </p>
+          {recommendations.map((recommendation, index) => (
+            <div
+              key={index}
+              className="created-card"
+            >
+              <p>
+                <span>Type</span>
+                <strong>{recommendation.type}</strong>
+              </p>
 
-          <p>
-            <span>Recommendation</span>
-            <strong>{recommendation.recommendation}</strong>
-          </p>
-
-          <p>
-            <span>Reason</span>
-            <strong>{recommendation.reason}</strong>
-          </p>
+              <p>
+                <span>Message</span>
+                <strong>{recommendation.message}</strong>
+              </p>
+            </div>
+          ))}
         </div>
       )}
     </section>
