@@ -1,65 +1,80 @@
 import { useState } from "react";
-import { API_BASE_URL } from "../../services/api";
+import { apiFetch } from "../../services/api";
 
 function ProgressSummary() {
-  const [userId, setUserId] = useState("");
   const [summary, setSummary] = useState(null);
   const [message, setMessage] = useState("");
 
-  async function handleSubmit(event) {
-    event.preventDefault();
-
+  async function handleLoadSummary() {
     try {
-      const response = await fetch(
-        `${API_BASE_URL}/api/progress-summary/${userId}`
-      );
-
-      if (!response.ok) {
-        throw new Error("Could not load progress summary");
-      }
-
-      const data = await response.json();
+      const data = await apiFetch("/api/progress-summary/me");
 
       setSummary(data);
       setMessage("");
     } catch (error) {
       setSummary(null);
-      setMessage("Could not load progress summary. Check the user ID.");
+      setMessage("Could not load your progress summary. Check your session.");
     }
   }
 
   return (
     <section className="form-card">
-      <h2>Progress summary</h2>
+      <h2>My progress summary</h2>
 
       <p className="form-helper">
-        Paste a User ID to view training, recovery, nutrition and wellness progress.
+        This summary is loaded using the logged-in user session.
       </p>
 
-      <form onSubmit={handleSubmit} className="summary-search">
-        <input
-          name="userId"
-          placeholder="Paste here the generated User ID"
-          value={userId}
-          onChange={(event) => setUserId(event.target.value)}
-          required
-        />
-
-        <button type="submit">View summary</button>
-      </form>
+      <button type="button" onClick={handleLoadSummary}>
+        View my summary
+      </button>
 
       {message && <p className="message">{message}</p>}
 
       {summary && (
         <div className="summary-list">
-          <p><span>Total trainings</span><strong>{summary.totalTrainings}</strong></p>
-          <p><span>Latest training</span><strong>{summary.latestTrainingMuscleGroup} — {summary.latestTrainingDate}</strong></p>
-          <p><span>Recovery fatigue</span><strong>{summary.latestRecoveryFatigue}</strong></p>
-          <p><span>Sleep hours</span><strong>{summary.latestRecoverySleepHours}</strong></p>
-          <p><span>Calories</span><strong>{summary.latestNutritionCalories}</strong></p>
-          <p><span>Protein</span><strong>{summary.latestNutritionProteinGrams}</strong></p>
-          <p><span>Stress</span><strong>{summary.latestWellnessStress}</strong></p>
-          <p><span>Motivation</span><strong>{summary.latestWellnessMotivation}</strong></p>
+          <p>
+            <span>Total trainings</span>
+            <strong>{summary.totalTrainings}</strong>
+          </p>
+
+          <p>
+            <span>Latest training</span>
+            <strong>
+              {summary.latestTrainingMuscleGroup || "No data"} —{" "}
+              {summary.latestTrainingDate || "No date"}
+            </strong>
+          </p>
+
+          <p>
+            <span>Recovery fatigue</span>
+            <strong>{summary.latestRecoveryFatigue || "No data"}</strong>
+          </p>
+
+          <p>
+            <span>Sleep hours</span>
+            <strong>{summary.latestRecoverySleepHours ?? "No data"}</strong>
+          </p>
+
+          <p>
+            <span>Calories</span>
+            <strong>{summary.latestNutritionCalories ?? "No data"}</strong>
+          </p>
+
+          <p>
+            <span>Protein</span>
+            <strong>{summary.latestNutritionProteinGrams ?? "No data"}</strong>
+          </p>
+
+          <p>
+            <span>Stress</span>
+            <strong>{summary.latestWellnessStress || "No data"}</strong>
+          </p>
+
+          <p>
+            <span>Motivation</span>
+            <strong>{summary.latestWellnessMotivation || "No data"}</strong>
+          </p>
         </div>
       )}
     </section>
