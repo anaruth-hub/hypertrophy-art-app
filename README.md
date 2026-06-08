@@ -1,4 +1,4 @@
-# El arte de la hipertrofia muscular
+# The Art of Muscle Hypertrophy
 
 ![Java](https://img.shields.io/badge/Java-21-orange)
 ![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.5-green)
@@ -9,65 +9,66 @@
 
 ---
 
-# Description
+#Description
 
-**El arte de la hipertrofia muscular** es un MVP orientado al seguimiento de hipertrofia natural.
+**The Art of Muscular Hypertrophy** is an MVP aimed at tracking natural hypertrophy.
 
-El objetivo del proyecto es proporcionar una herramienta que permita registrar y consultar información relacionada con:
+The project aims to provide a tool for recording and accessing information related to:
 
-* Entrenamientos
-* Recuperación y fatiga
-* Nutrición y macronutrientes
-* Bienestar físico y emocional
-* Progreso general del usuario
+* Training
+* Recovery and fatigue
+* Nutrition and macronutrients
+* Physical and emotional well-being
+* Overall user progress
 
-Además, el sistema incorpora un modelo de supervisión donde un entrenador puede realizar seguimiento de usuarios asignados y generar recomendaciones personalizadas.
+In addition, the system incorporates a monitoring model where a coach can track assigned users and generate personalized recommendations.
 
-El proyecto ha sido desarrollado utilizando **Arquitectura Hexagonal**, persistencia híbrida **PostgreSQL + MongoDB**, autenticación mediante **JWT** y un frontend React conectado al backend mediante endpoints REST.
+The project was developed using a Hexagonal Architecture, hybrid persistence via PostgreSQL and MongoDB, authentication using JWT, and a React frontend connected to the backend via REST endpoints.
 
 ---
 
-# Technologies
+#Technologies
 
-## Backend
+##Backend
 
 * Java 21
-* Spring Boot 3.5
-* Spring Web
-* Spring Security
-* JWT Authentication
-* Spring Data JPA
+  *Spring Boot 3.5
+  *Spring Web
+  *SpringSecurity
+  *JWT Authentication
+  *Spring Data JPA
 * Spring Data MongoDB
-* Maven
-* Swagger / OpenAPI
+  *Maven
+  *Swagger/OpenAPI
 
-## Frontend
+##Frontend
 
-* React
+*React
 * Vite
 * JavaScript
-* CSS
+  *CSS
 * Vercel v0 (UI generation assistance)
 
 ## Databases
 
 ### PostgreSQL
 
-Utilizada para información relacional:
+Used for relational information:
 
 * Users
 * Trainers
 * User-Trainer assignments
+* Authentication accounts
 
 ### MongoDB
 
-Utilizada para registros históricos:
+Used for historical records:
 
 * Trainings
 * Recovery Check-ins
-* Nutrition Entries
+  *Nutrition Entries
 * Wellness Check-ins
-* Recommendations
+  *Recommendations
 
 ## DevOps
 
@@ -75,9 +76,9 @@ Utilizada para registros históricos:
 
 ---
 
-# Architecture
+#Architecture
 
-El proyecto sigue una arquitectura hexagonal dividida en tres capas principales:
+The project follows a hexagonal architecture divided into three layers Main components:
 
 ```text
 Domain
@@ -87,9 +88,10 @@ Infrastructure
 
 ## Domain
 
-Contiene las reglas de negocio puras.
+Contains the pure business rules.
 
-Ejemplos:
+
+Examples:
 
 ```text
 User
@@ -99,26 +101,27 @@ RecoveryCheckIn
 NutritionEntry
 WellnessCheckIn
 Recommendation
+Account
 ```
 
-La capa de dominio no depende de:
+The domain layer does not depend on:
 
 * Spring
 * JPA
 * MongoDB
-* Controladores REST
+* REST Controllers
 
 ---
 
 ## Application
 
-Contiene:
+Contains:
 
-* Casos de uso
-* Puertos de entrada
-* Puertos de salida
+* Use Cases
+* Inbound Ports
+* Outbound Ports
 
-Ejemplos:
+Examples:
 
 ```text
 CreateUserUseCase
@@ -126,20 +129,21 @@ RegisterTrainingUseCase
 ViewProgressSummaryUseCase
 CreateRecommendationUseCase
 ViewMyRecommendationsUseCase
+AuthenticateAccountUseCase
 ```
 
 ---
 
 ## Infrastructure
 
-Contiene los detalles técnicos:
+Contains the technical details:
 
 ```text
 REST Controllers
 DTOs
 Persistence Adapters
 JPA Entities
-Mongo Documents
+MongoDB Documents
 Mappers
 Security Configuration
 JWT Authentication
@@ -149,27 +153,31 @@ JWT Authentication
 
 # Authentication and Authorization
 
-El sistema incorpora autenticación mediante JWT.
+The system incorporates authentication using JWT.
 
 ## Roles
 
 ### USER
 
-Puede:
+Can:
 
-* Consultar su perfil autenticado
-* Consultar su progreso
-* Consultar recomendaciones recibidas
+* View their authenticated profile
+* View their progress
+* Record workouts
+* Record recovery
+* Record nutrition
+* Record wellness
+* View received recommendations
 
 ### TRAINER
 
-Puede:
+Can:
 
-* Consultar usuarios supervisados
-* Consultar progreso de usuarios asignados
-* Crear recomendaciones para usuarios asignados
+* View supervised users
+* View the progress of assigned users
+* Create recommendations for assigned users
 
-> Nota: En la versión actual del MVP, la asignación entre usuarios y entrenadores se realiza mediante el endpoint de asignación existente. La selección visual de entrenadores desde la interfaz se considera una mejora futura.
+> Note: The assignment between users and trainers is done through REST endpoints. Visual trainer selection from the interface is part of future user experience improvements.
 
 ---
 
@@ -177,59 +185,59 @@ Puede:
 
 ## US01 — Create User Profile
 
-Permite registrar usuarios.
+Allows users to register.
 
 ## US02 — Create Trainer Profile
 
-Permite registrar entrenadores.
+Allows trainers to register.
 
 ## US03 — Assign Trainer to User
 
-Permite asignar un entrenador a un usuario supervisado.
+Allows you to assign a trainer to a supervised user.
 
 ## US04 — Register Training Session
 
-Registro de entrenamientos.
+Records training sessions.
 
 ## US05 — Register Recovery Check-In
 
-Registro de:
+Records:
 
-* Fatiga
-* Sueño
-* Recuperación
+* Fatigue
+* Sleep
+* Recovery
 
 ## US06 — Register Nutrition Entry
 
-Registro de:
+Records:
 
-* Calorías
-* Proteína
-* Carbohidratos
-* Grasas
-* Hidratación
+* Calories
+* Protein
+* Carbohydrates
+* Fats
+* Hydration
 
 ## US07 — Register Wellness Check-In
 
-Registro de:
+Records:
 
-* Estado físico
-* Estado mental
-* Estrés
-* Motivación
-* Estado emocional
+* Physical Condition
+* Mental State
+* Stress
+* Motivation
+* Emotional State
 
 ## US08 — View Progress Summary
 
-Consulta del resumen de progreso.
+Views the progress summary.
 
 ## US09 — Trainer Views Assigned User Progress
 
-Permite que un entrenador consulte el progreso de usuarios supervisados.
+Allows a trainer to view the progress of supervised users.
 
 ## US10 — Recommendations
 
-Permite que un entrenador genere recomendaciones para usuarios asignados y que los usuarios las consulten posteriormente.
+Allows a trainer to generate recommendations for assigned users, which the users can then review later.
 
 ---
 
@@ -243,7 +251,7 @@ POST /api/auth/register-trainer
 POST /api/auth/login
 ```
 
-## Authenticated User
+##AuthenticatedUser
 
 ```http
 GET /api/users/me
@@ -254,18 +262,19 @@ GET /api/recommendations/me
 ## Trainer
 
 ```http
+GET /api/trainers
 GET /api/trainers/me/users
 GET /api/progress-summary/trainers/me/users/{userId}/progress
 POST /api/recommendations/trainers/me/users/{userId}
 ```
 
-## Assignment
+##Assignment
 
 ```http
 POST /api/users/{userId}/assign-trainer/{trainerId}
 ```
 
-## Tracking
+##Tracking
 
 ```http
 POST /api/trainings
@@ -276,198 +285,14 @@ POST /api/wellness-checkins
 
 ---
 
-# Main User Flow
+#MainUserFlow
 
 ```text
-Trainer Register
-        ↓
-Trainer Login
-        ↓
-User Register
-        ↓
-Assign Trainer
-        ↓
-User Login
-        ↓
-User Dashboard
-        ↓
-Trainer Dashboard
-        ↓
-Create Recommendation
-        ↓
-User Reads Recommendation
-```
-
----
-
-# Swagger
-
-Swagger está disponible en:
-
-```text
-http://localhost:8080/swagger-ui/index.html
-```
-
-Permite:
-
-* Probar endpoints
-* Validar respuestas
-* Inspeccionar payloads
-* Verificar integración frontend/backend
-
----
-
-# Docker
-
-Levantar contenedores:
-
-```bash
-docker compose up -d
-```
-
-Verificar:
-
-```bash
-docker ps
-```
-
----
-
-# Run Backend
-
-Desde la raíz del proyecto:
-
-```bash
-./mvnw clean compile
-./mvnw spring-boot:run
-```
-
-Backend:
-
-```text
-http://localhost:8080
-```
-
----
-
-# Run Frontend
-
-Entrar en la carpeta frontend:
-
-```bash
-cd frontend
-```
-
-Instalar dependencias:
-
-```bash
-npm install
-```
-
-Ejecutar:
-
-```bash
-npm run dev
-```
-
-Frontend:
-
-```text
-http://localhost:5173 
-http://localhost:3000
-```
-
----
-## Frontend
-
-La carpeta `frontend-official` contiene la versión utilizada para la demostración y evaluación del proyecto.
-
-Otras versiones o prototipos de interfaz pueden mantenerse en carpetas separadas únicamente con fines de experimentación y aprendizaje.
-
-# Frontend
-
-El frontend proporciona una interfaz mínima para:
-
-## User Dashboard
-
-* Ver perfil autenticado
-* Ver progreso personal
-* Ver recomendaciones recibidas
-
-## Trainer Dashboard
-
-* Ver usuarios supervisados
-* Consultar progreso de usuarios asignados
-* Crear recomendaciones
-
----
-
-# Frontend Development
-
-El frontend fue generado inicialmente utilizando Vercel v0 como herramienta de asistencia para la creación rápida de interfaces React.
-
-Posteriormente fue adaptado e integrado con los endpoints reales del backend para implementar los flujos de autenticación, consulta de progreso y gestión de recomendaciones.
-
-El frontend tiene como objetivo proporcionar una interfaz mínima para demostrar el funcionamiento del sistema y la integración con la API REST.
-
-El desarrollo del backend, la arquitectura hexagonal, el modelo de dominio, la persistencia híbrida PostgreSQL + MongoDB, la autenticación JWT y los casos de uso constituyen el núcleo funcional del proyecto.
-
----
-
-# Technical Decisions
-
-## Why Hexagonal Architecture?
-
-Para desacoplar las reglas de negocio de la infraestructura.
-
-Permite modificar:
-
-* Base de datos
-* Framework
-* Interfaces de usuario
-
-sin afectar la lógica de negocio.
-
-## Why PostgreSQL?
-
-Porque User, Trainer y Assignment son entidades relacionales y estructuradas.
-
-## Why MongoDB?
-
-Porque los registros de entrenamiento, recuperación, nutrición, bienestar y recomendaciones son información histórica y flexible.
-
-## Why JWT?
-
-Para autenticar usuarios y entrenadores mediante tokens sin mantener sesiones en servidor.
-
----
-
-# Future Improvements
-
-* Selección visual de entrenadores desde la interfaz
-* Gestión completa de asignaciones sin uso directo de identificadores
-* Dashboard avanzado para entrenadores
-* Gráficas de progreso y evolución
-* Histórico ampliado de métricas
-* Recomendaciones más avanzadas basadas en datos históricos
-* Mayor cobertura de pruebas automatizadas
-* Despliegue cloud
-* Mejora de la experiencia de usuario del frontend
-
----
-
-# Conclusion
-
-Este proyecto implementa un MVP funcional para el seguimiento de hipertrofia natural utilizando:
-
-* Arquitectura Hexagonal
-* Java 21
-* Spring Boot
-* PostgreSQL
-* MongoDB
-* JWT Authentication
-* React + Vite
-* Swagger/OpenAPI
-* Docker Compose
-
-El sistema permite registrar información relacionada con entrenamiento, recuperación, nutrición y bienestar, así como gestionar un flujo básico de supervisión entre usuarios y entrenadores mediante autenticación y recomendaciones personalizadas.
+Register Trainer 
+↓
+Register User 
+↓
+Login 
+↓
+Assign Trainer 
+↓
