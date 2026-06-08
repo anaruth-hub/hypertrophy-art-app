@@ -27,11 +27,7 @@ function AssignmentForm() {
 
   function handleAssignmentChange(event) {
     const { name, value } = event.target;
-
-    setAssignmentForm({
-      ...assignmentForm,
-      [name]: value,
-    });
+    setAssignmentForm({ ...assignmentForm, [name]: value });
   }
 
   async function handleAssignmentSubmit(event) {
@@ -40,18 +36,12 @@ function AssignmentForm() {
     try {
       const result = await apiFetch(
         `/api/users/${assignmentForm.userId}/assign-trainer/${assignmentForm.trainerId}`,
-        {
-          method: "POST",
-        }
+        { method: "POST" }
       );
 
-      setAssignmentMessage(
-        `Trainer assigned successfully to ${result.userName}`
-      );
+      setAssignmentMessage(`Trainer assigned successfully to ${result.userName}`);
     } catch (error) {
-      setAssignmentMessage(
-        "Could not assign trainer. Check user mode and selected trainer."
-      );
+      setAssignmentMessage("Could not assign trainer. Check selected trainer.");
     }
   }
 
@@ -59,9 +49,7 @@ function AssignmentForm() {
     <form className="form-card" onSubmit={handleAssignmentSubmit}>
       <h2>Assign trainer</h2>
 
-      <p className="form-helper">
-        Select a trainer from the list.
-      </p>
+      <p className="form-helper">Select a trainer from the list.</p>
 
       <label className="field-group">
         <span>User ID</span>
