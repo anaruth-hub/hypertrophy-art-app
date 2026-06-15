@@ -1,11 +1,8 @@
 import { useState } from "react";
-import { apiFetch, getStoredAuth } from "../../services/api";
+import { apiFetch } from "../../services/api";
 
 function WellnessForm() {
-  const storedAuth = getStoredAuth();
-
   const [wellnessForm, setWellnessForm] = useState({
-    userId: storedAuth?.id || "",
     date: "",
     physicalState: "MEDIUM",
     mentalState: "MEDIUM",
@@ -36,7 +33,6 @@ function WellnessForm() {
       );
 
       setWellnessForm({
-        userId: storedAuth?.id || "",
         date: "",
         physicalState: "MEDIUM",
         mentalState: "MEDIUM",
@@ -59,14 +55,6 @@ function WellnessForm() {
       <p className="form-helper">
         Wellness data will be linked to the logged-in user.
       </p>
-
-      <input
-        name="userId"
-        value={wellnessForm.userId}
-        onChange={handleWellnessChange}
-        readOnly
-        required
-      />
 
       <input
         type="date"

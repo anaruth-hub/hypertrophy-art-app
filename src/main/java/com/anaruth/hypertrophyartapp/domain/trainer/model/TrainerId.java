@@ -22,4 +22,20 @@ public final class TrainerId {
     public UUID value() {
         return value;
     }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (!(object instanceof TrainerId trainerId)) {
+            return false;
+        }
+        return value.equals(trainerId.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return value.hashCode();
+    }
 }

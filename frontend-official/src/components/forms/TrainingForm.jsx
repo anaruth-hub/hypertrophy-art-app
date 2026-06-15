@@ -1,11 +1,8 @@
 import { useState } from "react";
-import { apiFetch, getStoredAuth } from "../../services/api";
+import { apiFetch } from "../../services/api";
 
 function TrainingForm() {
-  const storedAuth = getStoredAuth();
-
   const [trainingForm, setTrainingForm] = useState({
-    userId: storedAuth?.id || "",
     date: "",
     muscleGroup: "",
     exercises: "",
@@ -37,7 +34,6 @@ function TrainingForm() {
       );
 
       setTrainingForm({
-        userId: storedAuth?.id || "",
         date: "",
         muscleGroup: "",
         exercises: "",
@@ -58,14 +54,6 @@ function TrainingForm() {
       <p className="form-helper">
         This training will be linked to the logged-in user.
       </p>
-
-      <input
-        name="userId"
-        value={trainingForm.userId}
-        onChange={handleTrainingChange}
-        readOnly
-        required
-      />
 
       <input
         type="date"

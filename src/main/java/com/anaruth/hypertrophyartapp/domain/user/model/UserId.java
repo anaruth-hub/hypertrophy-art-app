@@ -12,14 +12,30 @@ public final class UserId {
     }
 
     public static UserId newId() {
-        return new UserId(UUID.randomUUID());
+         return new UserId(UUID.randomUUID());
     }
 
     public static UserId from(UUID value) {
-        return new UserId(value);
+          return new UserId(value);
     }
 
     public UUID value() {
-        return value;
+          return value;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (!(object instanceof UserId userId)) {
+            return false;
+        }
+        return value.equals(userId.value);
+    }
+
+    @Override
+    public int hashCode() {
+         return value.hashCode();
     }
 }

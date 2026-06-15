@@ -6,11 +6,13 @@ import com.anaruth.hypertrophyartapp.application.trainer.port.in.CreateTrainerUs
 import com.anaruth.hypertrophyartapp.application.trainer.port.in.SupervisedUserResult;
 import com.anaruth.hypertrophyartapp.application.trainer.port.in.ViewAllTrainersUseCase;
 import com.anaruth.hypertrophyartapp.application.trainer.port.in.ViewMySupervisedUsersUseCase;
+import com.anaruth.hypertrophyartapp.domain.auth.model.Role;
 import com.anaruth.hypertrophyartapp.infrastructure.security.AuthenticatedAccount;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -73,6 +75,8 @@ public class TrainerController {
     public List<SupervisedUserResponse> viewMySupervisedUsers(
             @AuthenticationPrincipal AuthenticatedAccount account
     ) {
+        requireRole(account, Role.TRAINER);
+
         return viewMySupervisedUsersUseCase.viewMySupervisedUsers(account.id())
                 .stream()
                 .map(this::toSupervisedUserResponse)
@@ -86,5 +90,11 @@ public class TrainerController {
                 result.email(),
                 result.mode()
         );
+    }
+
+    private void requireRole(AuthenticatedAccount account, Role role) {
+        if (account == null || account.role() != role) {
+            throw new AccessDeniedException("Required role: " + role);
+        }
     }
 }

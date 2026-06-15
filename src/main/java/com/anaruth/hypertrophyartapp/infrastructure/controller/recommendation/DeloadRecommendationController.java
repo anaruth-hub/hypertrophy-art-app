@@ -6,8 +6,10 @@ import com.anaruth.hypertrophyartapp.application.recommendation.port.in.CreateRe
 import com.anaruth.hypertrophyartapp.application.recommendation.port.in.CreateRecommendationUseCase;
 import com.anaruth.hypertrophyartapp.application.recommendation.port.in.RecommendationResult;
 import com.anaruth.hypertrophyartapp.application.recommendation.port.in.ViewMyRecommendationsUseCase;
+import com.anaruth.hypertrophyartapp.domain.auth.model.Role;
 import com.anaruth.hypertrophyartapp.infrastructure.security.AuthenticatedAccount;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -41,7 +43,15 @@ public class DeloadRecommendationController {
 
     @GetMapping("/deload/{userId}")
     @Operation(summary = "View deload recommendation by user id")
-    public DeloadRecommendationResponse viewByUserId(@PathVariable UUID userId) {
+    public DeloadRecommendationResponse viewByUserId(
+            @AuthenticationPrincipal AuthenticatedAccount account,
+            @PathVariable UUID userId
+    ) {
+        requireRole(account, Role.USER);
+        if (!account.id().equals(userId)) {
+            throw new AccessDeniedException("Users can only view their own deload recommendation");
+        }
+
         DeloadRecommendationResult result =
                 viewDeloadRecommendationUseCase.viewByUserId(userId);
 
@@ -60,6 +70,8 @@ public class DeloadRecommendationController {
             @PathVariable UUID userId,
             @RequestBody CreateRecommendationRequest request
     ) {
+        requireRole(account, Role.TRAINER);
+
         RecommendationResult result =
                 createRecommendationUseCase.createRecommendation(
                         new CreateRecommendationCommand(
@@ -78,6 +90,8 @@ public class DeloadRecommendationController {
     public List<RecommendationResponse> viewMyRecommendations(
             @AuthenticationPrincipal AuthenticatedAccount account
     ) {
+        requireRole(account, Role.USER);
+
         return viewMyRecommendationsUseCase.viewMyRecommendations(account.id())
                 .stream()
                 .map(this::toRecommendationResponse)
@@ -92,5 +106,11 @@ public class DeloadRecommendationController {
                 result.date(),
                 result.message()
         );
+    }
+
+    private void requireRole(AuthenticatedAccount account, Role role) {
+        if (account == null || account.role() != role) {
+            throw new AccessDeniedException("Required role: " + role);
+        }
     }
 }

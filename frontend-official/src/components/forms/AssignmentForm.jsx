@@ -1,12 +1,9 @@
 import { useEffect, useState } from "react";
-import { apiFetch, getStoredAuth } from "../../services/api";
+import { apiFetch } from "../../services/api";
 
 function AssignmentForm() {
-  const storedAuth = getStoredAuth();
-
   const [trainers, setTrainers] = useState([]);
   const [assignmentForm, setAssignmentForm] = useState({
-    userId: storedAuth?.role === "USER" ? storedAuth.id : "",
     trainerId: "",
   });
 
@@ -35,7 +32,7 @@ function AssignmentForm() {
 
     try {
       const result = await apiFetch(
-        `/api/users/${assignmentForm.userId}/assign-trainer/${assignmentForm.trainerId}`,
+        `/api/users/me/assign-trainer/${assignmentForm.trainerId}`,
         { method: "POST" }
       );
 
@@ -50,17 +47,6 @@ function AssignmentForm() {
       <h2>Assign trainer</h2>
 
       <p className="form-helper">Select a trainer from the list.</p>
-
-      <label className="field-group">
-        <span>User ID</span>
-        <input
-          name="userId"
-          value={assignmentForm.userId}
-          onChange={handleAssignmentChange}
-          readOnly={storedAuth?.role === "USER"}
-          required
-        />
-      </label>
 
       <label className="field-group">
         <span>Trainer</span>
