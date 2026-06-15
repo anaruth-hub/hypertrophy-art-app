@@ -1,11 +1,8 @@
 import { useState } from "react";
-import { apiFetch, getStoredAuth } from "../../services/api";
+import { apiFetch } from "../../services/api";
 
 function NutritionForm() {
-  const storedAuth = getStoredAuth();
-
   const [nutritionForm, setNutritionForm] = useState({
-    userId: storedAuth?.id || "",
     date: "",
     calories: "",
     proteinGrams: "",
@@ -29,7 +26,6 @@ function NutritionForm() {
       const nutrition = await apiFetch("/api/nutrition-entries", {
         method: "POST",
         body: JSON.stringify({
-          userId: nutritionForm.userId,
           date: nutritionForm.date,
           calories: Number(nutritionForm.calories),
           proteinGrams: Number(nutritionForm.proteinGrams),
@@ -45,7 +41,6 @@ function NutritionForm() {
       );
 
       setNutritionForm({
-        userId: storedAuth?.id || "",
         date: "",
         calories: "",
         proteinGrams: "",
@@ -68,14 +63,6 @@ function NutritionForm() {
       <p className="form-helper">
         Nutrition data will be linked to the logged-in user.
       </p>
-
-      <input
-        name="userId"
-        value={nutritionForm.userId}
-        onChange={handleNutritionChange}
-        readOnly
-        required
-      />
 
       <input
         type="date"

@@ -3,8 +3,10 @@ package com.anaruth.hypertrophyartapp.infrastructure.controller.progress;
 import com.anaruth.hypertrophyartapp.application.progress.port.in.ProgressSummaryResult;
 import com.anaruth.hypertrophyartapp.application.progress.port.in.ViewAssignedUserProgressUseCase;
 import com.anaruth.hypertrophyartapp.application.progress.port.in.ViewProgressSummaryUseCase;
+import com.anaruth.hypertrophyartapp.domain.auth.model.Role;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.*;
 import com.anaruth.hypertrophyartapp.application.progress.port.in.ViewMyProgressSummaryUseCase;
 import com.anaruth.hypertrophyartapp.infrastructure.security.AuthenticatedAccount;
@@ -34,7 +36,15 @@ public class ProgressSummaryController {
 
     @GetMapping("/{userId}")
     @Operation(summary = "View progress summary by user id")
-    public ProgressSummaryResponse viewByUserId(@PathVariable UUID userId) {
+    public ProgressSummaryResponse viewByUserId(
+            @AuthenticationPrincipal AuthenticatedAccount account,
+            @PathVariable UUID userId
+    ) {
+        requireRole(account, Role.USER);
+        if (!account.id().equals(userId)) {
+            throw new AccessDeniedException("Users can only view their own progress");
+        }
+
         ProgressSummaryResult result = viewProgressSummaryUseCase.viewByUserId(userId);
 
         return new ProgressSummaryResponse(
@@ -54,9 +64,15 @@ public class ProgressSummaryController {
     @GetMapping("/trainers/{trainerId}/users/{userId}")
     @Operation(summary = "Trainer views assigned user progress summary")
     public ProgressSummaryResponse viewAssignedUserProgress(
+            @AuthenticationPrincipal AuthenticatedAccount account,
             @PathVariable UUID trainerId,
             @PathVariable UUID userId
     ) {
+        requireRole(account, Role.TRAINER);
+        if (!account.id().equals(trainerId)) {
+            throw new AccessDeniedException("Trainers can only use their own id");
+        }
+
         ProgressSummaryResult result = viewAssignedUserProgressUseCase
                 .viewAssignedUserProgress(trainerId, userId);
 
@@ -78,6 +94,8 @@ public class ProgressSummaryController {
     public ProgressSummaryResponse viewMyProgressSummary(
             @AuthenticationPrincipal AuthenticatedAccount account
     ) {
+        requireRole(account, Role.USER);
+
         ProgressSummaryResult result =
                 viewMyProgressSummaryUseCase.viewMyProgressSummary(account.id());
 
@@ -100,6 +118,8 @@ public class ProgressSummaryController {
             @AuthenticationPrincipal AuthenticatedAccount account,
             @PathVariable UUID userId
     ) {
+        requireRole(account, Role.TRAINER);
+
         ProgressSummaryResult result =
                 viewAssignedUserProgressUseCase.viewAssignedUserProgress(
                         account.id(),
@@ -118,5 +138,11 @@ public class ProgressSummaryController {
                 result.latestWellnessStress(),
                 result.latestWellnessMotivation()
         );
+    }
+
+    private void requireRole(AuthenticatedAccount account, Role role) {
+        if (account == null || account.role() != role) {
+            throw new AccessDeniedException("Required role: " + role);
+        }
     }
 }

@@ -8,11 +8,13 @@ import com.anaruth.hypertrophyartapp.application.user.port.in.CreateUserResult;
 import com.anaruth.hypertrophyartapp.application.user.port.in.CreateUserUseCase;
 import com.anaruth.hypertrophyartapp.application.user.port.in.CurrentUserProfileResult;
 import com.anaruth.hypertrophyartapp.application.user.port.in.GetCurrentUserProfileUseCase;
+import com.anaruth.hypertrophyartapp.domain.auth.model.Role;
 import com.anaruth.hypertrophyartapp.infrastructure.security.AuthenticatedAccount;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -66,11 +68,37 @@ public class UserController {
     @PostMapping("/{userId}/assign-trainer/{trainerId}")
     @Operation(summary = "Assign trainer to supervised user")
     public AssignTrainerResponse assignTrainerToUser(
+            @AuthenticationPrincipal AuthenticatedAccount account,
             @PathVariable UUID userId,
             @PathVariable UUID trainerId
     ) {
+        requireRole(account, Role.USER);
+        if (!account.id().equals(userId)) {
+            throw new AccessDeniedException("Users can only assign their own trainer");
+        }
+
         AssignTrainerToUserResult result = assignTrainerToUserUseCase.assignTrainer(
                 new AssignTrainerToUserCommand(userId, trainerId)
+        );
+
+        return new AssignTrainerResponse(
+                result.userId(),
+                result.userName(),
+                result.mode(),
+                result.trainerId()
+        );
+    }
+
+    @PostMapping("/me/assign-trainer/{trainerId}")
+    @Operation(summary = "Assign trainer to current authenticated supervised user")
+    public AssignTrainerResponse assignTrainerToCurrentUser(
+            @AuthenticationPrincipal AuthenticatedAccount account,
+            @PathVariable UUID trainerId
+    ) {
+        requireRole(account, Role.USER);
+
+        AssignTrainerToUserResult result = assignTrainerToUserUseCase.assignTrainer(
+                new AssignTrainerToUserCommand(account.id(), trainerId)
         );
 
         return new AssignTrainerResponse(
@@ -86,6 +114,8 @@ public class UserController {
     public CurrentUserProfileResponse getCurrentUserProfile(
             @AuthenticationPrincipal AuthenticatedAccount account
     ) {
+        requireRole(account, Role.USER);
+
         CurrentUserProfileResult result =
                 getCurrentUserProfileUseCase.getCurrentUserProfile(account.id());
 
@@ -96,5 +126,11 @@ public class UserController {
                 result.role(),
                 result.mode()
         );
+    }
+
+    private void requireRole(AuthenticatedAccount account, Role role) {
+        if (account == null || account.role() != role) {
+            throw new AccessDeniedException("Required role: " + role);
+        }
     }
 }

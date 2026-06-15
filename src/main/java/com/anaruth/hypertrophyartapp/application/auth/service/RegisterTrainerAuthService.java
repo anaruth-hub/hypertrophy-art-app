@@ -4,6 +4,7 @@ import com.anaruth.hypertrophyartapp.application.auth.port.in.AuthResult;
 import com.anaruth.hypertrophyartapp.application.auth.port.in.RegisterTrainerAuthCommand;
 import com.anaruth.hypertrophyartapp.application.auth.port.in.RegisterTrainerAuthUseCase;
 import com.anaruth.hypertrophyartapp.application.trainer.port.out.TrainerRepository;
+import com.anaruth.hypertrophyartapp.application.user.port.out.UserRepository;
 import com.anaruth.hypertrophyartapp.domain.trainer.model.Trainer;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -12,15 +13,18 @@ import org.springframework.stereotype.Service;
 public class RegisterTrainerAuthService implements RegisterTrainerAuthUseCase {
 
     private final TrainerRepository trainerRepository;
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
 
     public RegisterTrainerAuthService(
             TrainerRepository trainerRepository,
+            UserRepository userRepository,
             PasswordEncoder passwordEncoder,
             JwtService jwtService
     ) {
         this.trainerRepository = trainerRepository;
+        this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
     }
@@ -30,6 +34,10 @@ public class RegisterTrainerAuthService implements RegisterTrainerAuthUseCase {
         trainerRepository.findByEmail(command.email())
                 .ifPresent(trainer -> {
                     throw new IllegalArgumentException("Trainer email already exists");
+                });
+        userRepository.findByEmail(command.email())
+                .ifPresent(user -> {
+                    throw new IllegalArgumentException("Email already exists as user");
                 });
 
         String passwordHash = passwordEncoder.encode(command.password());

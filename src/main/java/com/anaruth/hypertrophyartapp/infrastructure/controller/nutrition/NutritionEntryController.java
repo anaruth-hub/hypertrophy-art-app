@@ -3,10 +3,14 @@ package com.anaruth.hypertrophyartapp.infrastructure.controller.nutrition;
 import com.anaruth.hypertrophyartapp.application.nutrition.port.in.RegisterNutritionEntryCommand;
 import com.anaruth.hypertrophyartapp.application.nutrition.port.in.RegisterNutritionEntryResult;
 import com.anaruth.hypertrophyartapp.application.nutrition.port.in.RegisterNutritionEntryUseCase;
+import com.anaruth.hypertrophyartapp.domain.auth.model.Role;
+import com.anaruth.hypertrophyartapp.infrastructure.security.AuthenticatedAccount;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,10 +31,15 @@ public class NutritionEntryController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Register nutrition macros")
-    public NutritionEntryResponse register(@Valid @RequestBody RegisterNutritionEntryRequest request) {
+    public NutritionEntryResponse register(
+            @AuthenticationPrincipal AuthenticatedAccount account,
+            @Valid @RequestBody RegisterNutritionEntryRequest request
+    ) {
+        requireRole(account, Role.USER);
+
         RegisterNutritionEntryResult result = registerNutritionEntryUseCase.register(
                 new RegisterNutritionEntryCommand(
-                        request.userId(),
+                        account.id(),
                         request.date(),
                         request.calories(),
                         request.proteinGrams(),
@@ -52,5 +61,11 @@ public class NutritionEntryController {
                 result.hydrationLiters(),
                 result.notes()
         );
+    }
+
+    private void requireRole(AuthenticatedAccount account, Role role) {
+        if (account == null || account.role() != role) {
+            throw new AccessDeniedException("Required role: " + role);
+        }
     }
 }

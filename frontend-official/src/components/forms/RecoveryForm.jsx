@@ -1,11 +1,8 @@
 import { useState } from "react";
-import { apiFetch, getStoredAuth } from "../../services/api";
+import { apiFetch } from "../../services/api";
 
 function RecoveryForm() {
-  const storedAuth = getStoredAuth();
-
   const [recoveryForm, setRecoveryForm] = useState({
-    userId: storedAuth?.id || "",
     date: "",
     fatigueLevel: "MEDIUM",
     sorenessLevel: "MEDIUM",
@@ -38,7 +35,6 @@ function RecoveryForm() {
       );
 
       setRecoveryForm({
-        userId: storedAuth?.id || "",
         date: "",
         fatigueLevel: "MEDIUM",
         sorenessLevel: "MEDIUM",
@@ -60,17 +56,6 @@ function RecoveryForm() {
       <p className="form-helper">
         Recovery data will be linked to the logged-in user.
       </p>
-
-      <label className="field-group">
-        <span>User ID</span>
-        <input
-          name="userId"
-          value={recoveryForm.userId}
-          onChange={handleRecoveryChange}
-          readOnly
-          required
-        />
-      </label>
 
       <label className="field-group">
         <span>Date</span>

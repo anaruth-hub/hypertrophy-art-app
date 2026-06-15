@@ -1,249 +1,71 @@
 # The Art of Muscle Hypertrophy
 
-![Java](https://img.shields.io/badge/Java-21-orange)
-![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.5-green)
-![React](https://img.shields.io/badge/React-Vite-blue)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-blue)
-![MongoDB](https://img.shields.io/badge/MongoDB-NoSQL-green)
-![Docker](https://img.shields.io/badge/Docker-Compose-blue)
+Backend and frontend MVP for natural hypertrophy tracking with user and trainer flows.
 
----
+## Current Status
 
-#Description
+The backend is a Spring Boot application using Java 21 and a hexagonal architecture:
 
-**The Art of Muscular Hypertrophy** is an MVP aimed at tracking natural hypertrophy.
+```text
+domain
+application
+infrastructure
+```
 
-The project aims to provide a tool for recording and accessing information related to:
+The current working flow supports:
 
-* Training
-* Recovery and fatigue
-* Nutrition and macronutrients
-* Physical and emotional well-being
-* Overall user progress
+- User and trainer registration with password.
+- Login with JWT.
+- Protected endpoints using `Authorization: Bearer <token>`.
+- USER role for profile, tracking, progress and received recommendations.
+- TRAINER role for supervised users, assigned user progress and recommendation creation.
+- User-trainer assignment without manually copying the current user's ID.
+- PostgreSQL for users, trainers, authentication data and user-trainer assignment.
+- MongoDB for training, recovery, nutrition, wellness and recommendations.
 
-In addition, the system incorporates a monitoring model where a coach can track assigned users and generate personalized recommendations.
+## Tech Stack
 
-The project was developed using a Hexagonal Architecture, hybrid persistence via PostgreSQL and MongoDB, authentication using JWT, and a React frontend connected to the backend via REST endpoints.
+- Java 21
+- Spring Boot 3.5
+- Spring Web
+- Spring Security
+- JWT
+- Spring Data JPA
+- PostgreSQL
+- Spring Data MongoDB
+- MongoDB
+- Docker Compose
+- Swagger / OpenAPI
+- Maven
 
----
-
-#Technologies
-
-##Backend
-
-* Java 21
-  *Spring Boot 3.5
-  *Spring Web
-  *SpringSecurity
-  *JWT Authentication
-  *Spring Data JPA
-* Spring Data MongoDB
-  *Maven
-  *Swagger/OpenAPI
-
-##Frontend
-
-*React
-* Vite
-* JavaScript
-  *CSS
-* Vercel v0 (UI generation assistance)
-
-## Databases
+## Persistence
 
 ### PostgreSQL
 
-Used for relational information:
+PostgreSQL stores relational and authentication-related data:
 
-* Users
-* Trainers
-* User-Trainer assignments
-* Authentication accounts
+- Users
+- Trainers
+- Password hashes
+- Roles
+- User mode (`SELF_MANAGED` / `SUPERVISED`)
+- User-trainer assignment
 
 ### MongoDB
 
-Used for historical records:
+MongoDB stores historical/user activity documents:
 
-* Trainings
-* Recovery Check-ins
-  *Nutrition Entries
-* Wellness Check-ins
-  *Recommendations
+- Training sessions
+- Recovery check-ins
+- Nutrition entries
+- Wellness check-ins
+- Trainer recommendations
 
-## DevOps
+## Authentication and Roles
 
-* Docker Compose
+Authentication is JWT-based.
 
----
-
-#Architecture
-
-The project follows a hexagonal architecture divided into three layers Main components:
-
-```text
-Domain
-Application
-Infrastructure
-```
-
-## Domain
-
-Contains the pure business rules.
-
-
-Examples:
-
-```text
-User
-Trainer
-Training
-RecoveryCheckIn
-NutritionEntry
-WellnessCheckIn
-Recommendation
-Account
-```
-
-The domain layer does not depend on:
-
-* Spring
-* JPA
-* MongoDB
-* REST Controllers
-
----
-
-## Application
-
-Contains:
-
-* Use Cases
-* Inbound Ports
-* Outbound Ports
-
-Examples:
-
-```text
-CreateUserUseCase
-RegisterTrainingUseCase
-ViewProgressSummaryUseCase
-CreateRecommendationUseCase
-ViewMyRecommendationsUseCase
-AuthenticateAccountUseCase
-```
-
----
-
-## Infrastructure
-
-Contains the technical details:
-
-```text
-REST Controllers
-DTOs
-Persistence Adapters
-JPA Entities
-MongoDB Documents
-Mappers
-Security Configuration
-JWT Authentication
-```
-
----
-
-# Authentication and Authorization
-
-The system incorporates authentication using JWT.
-
-## Roles
-
-### USER
-
-Can:
-
-* View their authenticated profile
-* View their progress
-* Record workouts
-* Record recovery
-* Record nutrition
-* Record wellness
-* View received recommendations
-
-### TRAINER
-
-Can:
-
-* View supervised users
-* View the progress of assigned users
-* Create recommendations for assigned users
-
-> Note: The assignment between users and trainers is done through REST endpoints. Visual trainer selection from the interface is part of future user experience improvements.
-
----
-
-# Main Features
-
-## US01 — Create User Profile
-
-Allows users to register.
-
-## US02 — Create Trainer Profile
-
-Allows trainers to register.
-
-## US03 — Assign Trainer to User
-
-Allows you to assign a trainer to a supervised user.
-
-## US04 — Register Training Session
-
-Records training sessions.
-
-## US05 — Register Recovery Check-In
-
-Records:
-
-* Fatigue
-* Sleep
-* Recovery
-
-## US06 — Register Nutrition Entry
-
-Records:
-
-* Calories
-* Protein
-* Carbohydrates
-* Fats
-* Hydration
-
-## US07 — Register Wellness Check-In
-
-Records:
-
-* Physical Condition
-* Mental State
-* Stress
-* Motivation
-* Emotional State
-
-## US08 — View Progress Summary
-
-Views the progress summary.
-
-## US09 — Trainer Views Assigned User Progress
-
-Allows a trainer to view the progress of supervised users.
-
-## US10 — Recommendations
-
-Allows a trainer to generate recommendations for assigned users, which the users can then review later.
-
----
-
-# Main API Endpoints
-
-## Authentication
+Auth endpoints:
 
 ```http
 POST /api/auth/register-user
@@ -251,30 +73,66 @@ POST /api/auth/register-trainer
 POST /api/auth/login
 ```
 
-##AuthenticatedUser
+After registration or login, the backend returns:
+
+- JWT token
+- role
+- id
+- name
+- email
+
+Protected requests must include:
+
+```http
+Authorization: Bearer <token>
+```
+
+### USER
+
+A USER can:
+
+- View their profile.
+- Assign themselves to a trainer.
+- Register training, recovery, nutrition and wellness data.
+- View their progress summary.
+- View recommendations created for them.
+
+The authenticated USER no longer sends `userId` manually in tracking payloads. The backend takes the user id from the JWT.
+
+### TRAINER
+
+A TRAINER can:
+
+- View their supervised users.
+- View progress for users assigned to them.
+- Create recommendations for users assigned to them.
+
+## Main Endpoints
+
+### Authentication
+
+```http
+POST /api/auth/register-user
+POST /api/auth/register-trainer
+POST /api/auth/login
+```
+
+### User
 
 ```http
 GET /api/users/me
-GET /api/progress-summary/me
-GET /api/recommendations/me
+POST /api/users/me/assign-trainer/{trainerId}
 ```
 
-## Trainer
-
-```http
-GET /api/trainers
-GET /api/trainers/me/users
-GET /api/progress-summary/trainers/me/users/{userId}/progress
-POST /api/recommendations/trainers/me/users/{userId}
-```
-
-##Assignment
+Legacy assignment endpoint still exists, but it is protected and only allows the authenticated user to assign their own profile:
 
 ```http
 POST /api/users/{userId}/assign-trainer/{trainerId}
 ```
 
-##Tracking
+### Tracking
+
+All tracking endpoints require a USER JWT. Do not send `userId` in the request body.
 
 ```http
 POST /api/trainings
@@ -283,16 +141,250 @@ POST /api/nutrition-entries
 POST /api/wellness-checkins
 ```
 
----
+### Progress
 
-#MainUserFlow
+```http
+GET /api/progress-summary/me
+GET /api/progress-summary/trainers/me/users/{userId}/progress
+```
+
+Legacy ID-based progress endpoints still exist but are protected by role and identity checks:
+
+```http
+GET /api/progress-summary/{userId}
+GET /api/progress-summary/trainers/{trainerId}/users/{userId}
+```
+
+### Trainers
+
+```http
+GET /api/trainers
+GET /api/trainers/me/users
+```
+
+`GET /api/trainers` is public so users can select a trainer. Trainer-specific endpoints require a TRAINER JWT.
+
+### Recommendations
+
+```http
+GET /api/recommendations/me
+POST /api/recommendations/trainers/me/users/{userId}
+GET /api/recommendations/deload/{userId}
+```
+
+`GET /api/recommendations/me` requires USER. Creating recommendations requires TRAINER and the target user must be assigned to that trainer.
+
+## Requirements
+
+- Java 21
+- Maven
+- Docker Desktop or Docker Compose
+- PostgreSQL and MongoDB via `docker-compose.yml`
+- Optional: Node.js if running the frontend
+
+## Start Databases
+
+From the project root:
+
+```bash
+docker compose up -d
+```
+
+This starts:
+
+- PostgreSQL on `localhost:5432`
+- MongoDB on `localhost:27018`
+
+Database configuration is in:
 
 ```text
-Register Trainer 
-↓
-Register User 
-↓
-Login 
-↓
-Assign Trainer 
-↓
+src/main/resources/application.properties
+```
+
+## Run Backend
+
+Recommended command:
+
+```bash
+mvn spring-boot:run
+```
+
+Run tests:
+
+```bash
+.\\mvnw.cmd clean test
+```
+
+If you already have Maven installed, this also works:
+
+```bash
+mvn clean test
+```
+
+## Swagger
+
+Start the backend and open:
+
+```text
+http://localhost:8080/swagger-ui.html
+```
+
+## Using Swagger With JWT
+
+1. Register a trainer:
+
+```http
+POST /api/auth/register-trainer
+```
+
+2. Register a user:
+
+```http
+POST /api/auth/register-user
+```
+
+3. Or login:
+
+```http
+POST /api/auth/login
+```
+
+4. Copy the returned `token`.
+
+5. In Swagger, click `Authorize`.
+
+6. Paste the token with the Bearer prefix:
+
+```text
+Bearer <token>
+```
+
+7. Test protected endpoints such as:
+
+```http
+GET /api/users/me
+POST /api/trainings
+GET /api/progress-summary/me
+GET /api/trainers/me/users
+POST /api/recommendations/trainers/me/users/{userId}
+```
+
+## Recommended Manual Demo Flow
+
+1. Start PostgreSQL and MongoDB:
+
+```bash
+docker compose up -d
+```
+
+2. Start backend:
+
+```bash
+mvn spring-boot:run
+```
+
+3. Register a trainer using `/api/auth/register-trainer`.
+
+4. Register a supervised user using `/api/auth/register-user` with:
+
+```json
+{
+  "name": "User Demo",
+  "email": "user.demo@test.com",
+  "password": "password123",
+  "mode": "SUPERVISED"
+}
+```
+
+5. Login as the user or use the returned user token.
+
+6. List trainers:
+
+```http
+GET /api/trainers
+```
+
+7. Assign the user to a trainer:
+
+```http
+POST /api/users/me/assign-trainer/{trainerId}
+```
+
+8. Register user tracking data with the USER token:
+
+```http
+POST /api/trainings
+POST /api/recovery-checkins
+POST /api/nutrition-entries
+POST /api/wellness-checkins
+```
+
+Do not include `userId` in these request bodies.
+
+9. View user progress:
+
+```http
+GET /api/progress-summary/me
+```
+
+10. Login as the trainer.
+
+11. View supervised users:
+
+```http
+GET /api/trainers/me/users
+```
+
+12. View assigned user progress:
+
+```http
+GET /api/progress-summary/trainers/me/users/{userId}/progress
+```
+
+13. Create a recommendation:
+
+```http
+POST /api/recommendations/trainers/me/users/{userId}
+```
+
+14. Login as the user again and view recommendations:
+
+```http
+GET /api/recommendations/me
+```
+
+## Verification
+
+Backend verified with:
+
+```bash
+.\\mvnw.cmd clean test
+```
+
+Result:
+
+```text
+Tests run: 7, Failures: 0, Errors: 0, Skipped: 0
+BUILD SUCCESS
+```
+
+Frontend verified from `frontend-official` with:
+
+```bash
+npm.cmd run build
+```
+
+Result:
+
+```text
+vite build completed successfully
+```
+
+## Known Limitations / Future Improvements
+
+- Legacy endpoints for creating users/trainers without real auth still exist (`POST /api/users`, `POST /api/trainers`) and should not be used for the demo login flow.
+- Spring Data logs repository scanning warnings because JPA and Mongo repositories coexist in the same application. The app still starts and tests pass.
+- There is no admin role.
+- There is no profile editing flow.
+- Progress summary is basic and computed from the latest records.
+- Recommendation management is simple: trainers create recommendations and users read them.

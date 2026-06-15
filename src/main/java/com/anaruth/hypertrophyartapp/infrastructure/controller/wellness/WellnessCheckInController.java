@@ -3,10 +3,14 @@ package com.anaruth.hypertrophyartapp.infrastructure.controller.wellness;
 import com.anaruth.hypertrophyartapp.application.wellness.port.in.RegisterWellnessCheckInCommand;
 import com.anaruth.hypertrophyartapp.application.wellness.port.in.RegisterWellnessCheckInResult;
 import com.anaruth.hypertrophyartapp.application.wellness.port.in.RegisterWellnessCheckInUseCase;
+import com.anaruth.hypertrophyartapp.domain.auth.model.Role;
+import com.anaruth.hypertrophyartapp.infrastructure.security.AuthenticatedAccount;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -23,10 +27,15 @@ public class WellnessCheckInController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Register wellness check-in")
-    public WellnessCheckInResponse register(@Valid @RequestBody RegisterWellnessCheckInRequest request) {
+    public WellnessCheckInResponse register(
+            @AuthenticationPrincipal AuthenticatedAccount account,
+            @Valid @RequestBody RegisterWellnessCheckInRequest request
+    ) {
+        requireRole(account, Role.USER);
+
         RegisterWellnessCheckInResult result = registerWellnessCheckInUseCase.register(
                 new RegisterWellnessCheckInCommand(
-                        request.userId(),
+                        account.id(),
                         request.date(),
                         request.physicalState(),
                         request.mentalState(),
@@ -48,5 +57,11 @@ public class WellnessCheckInController {
                 result.motivationLevel(),
                 result.notes()
         );
+    }
+
+    private void requireRole(AuthenticatedAccount account, Role role) {
+        if (account == null || account.role() != role) {
+            throw new AccessDeniedException("Required role: " + role);
+        }
     }
 }
